@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "660154104955",
+    "project_id": "log-my-ride-1012b",
+    "storage_bucket": "log-my-ride-1012b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:660154104955:android:d9729a9daafedb8511f6de",
+        "android_client_info": {
+          "package_name": "com.logmyride.log_my_ride"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJdNQMKoNSlSSCGnAzeSRFdBLlV5ziZiQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
