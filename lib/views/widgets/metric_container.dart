@@ -5,9 +5,10 @@ import '../../utils/constants.dart';
 class MetricContainer extends StatefulWidget {
 
   String value;
-  IconData icon;
+  IconData? icon;
+  String? text;
   String? label;
-  MetricContainer({super.key, required this.value, this.label, required this.icon});
+  MetricContainer({super.key, required this.value, this.label, this.icon, this.text});
 
   @override
   State<MetricContainer> createState() => _MetricContainerState();
@@ -23,7 +24,7 @@ class _MetricContainerState extends State<MetricContainer> {
         child:Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(widget.icon, size: 35, color: primaryColor,),
+            widget.icon != null ? Icon(widget.icon, size: 35, color: primaryColor,) : (widget.text != null ? Text(widget.text!, style: const TextStyle(fontSize: 12, color: Colors.grey),) : Container()),
             const SizedBox(height: 10,),
             if(widget.label != null) Text(widget.label!, style: const TextStyle(fontSize: 12, color: Colors.grey),),
             Text(widget.value, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),

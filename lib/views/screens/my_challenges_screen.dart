@@ -7,6 +7,8 @@ import 'package:line_icons/line_icons.dart';
 import 'package:log_my_ride/utils/utils.dart';
 import 'package:log_my_ride/views/widgets/app_container.dart';
 import 'package:log_my_ride/views/widgets/random_spline_chart.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import '../../controllers/replay_timer_controller.dart';
 import '../../controllers/user_controller.dart';
 import '../../utils/constants.dart';
 
@@ -85,12 +87,11 @@ class _MyChallengesScreenState extends State<MyChallengesScreen> {
   Widget build(BuildContext context) {
 
     Get.find<UserController>();
+    Get.put(ReplayTimerController());
 
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Challenges'),
-      ),
+
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Padding(
@@ -98,8 +99,7 @@ class _MyChallengesScreenState extends State<MyChallengesScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 20,),
-              const Padding(padding: EdgeInsets.symmetric(horizontal: 10), child: Text('Latest Completed Challenge', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),)),
+              const Padding(padding: EdgeInsets.symmetric(horizontal: 10), child: Text('Latest Completed Challenge', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),)),
               AppContainer(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,13 +121,13 @@ class _MyChallengesScreenState extends State<MyChallengesScreen> {
                   ),).toList(),
                 ),
               ),
-              const SizedBox(height: 20,),
+              const SizedBox(height: 10,),
 
               Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Row(
                     children: [
-                      const Text('Challenges', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                      const Text('Challenges', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),),
                       const Spacer(),
                       //Reset
                       ElevatedButton.icon(
@@ -142,7 +142,7 @@ class _MyChallengesScreenState extends State<MyChallengesScreen> {
                     ],
                   )
               ),
-              const SizedBox(height: 20,),
+              const SizedBox(height: 10,),
               DropdownButtonFormField(
                 items: ['Track 1', 'Track 2', 'Track 3', 'Track 4', 'Track 5', 'Track 6'].map((track) => DropdownMenuItem(value: track,child: Text(track),)).toList(),
                 decoration: InputDecoration(
@@ -227,7 +227,33 @@ class _MyChallengesScreenState extends State<MyChallengesScreen> {
                                   ],
                                 ),
 
-                                const RandomSplineChart(),
+                                AppContainer(
+                                  child: SfCartesianChart(
+
+                                    primaryXAxis: CategoryAxis(
+                                      axisLine: null,
+                                      majorGridLines: const MajorGridLines(width: 0),
+                                      minorGridLines: const MinorGridLines(width: 0),
+                                    ),
+
+                                    series: <ChartSeries>[
+                                      SplineSeries<SpeedData, String>(
+                                        dataSource: generateTrackSectorActualSpeeddata(),
+                                        xValueMapper: (SpeedData sales, _) => sales.time,
+                                        yValueMapper: (SpeedData sales, _) => sales.speed,
+                                        name: 'Actual',
+                                        color: primaryColor,
+                                      ),
+                                      SplineSeries<SpeedData, String>(
+                                        dataSource: generateTrackSectorIdealSpeedData(),
+                                        xValueMapper: (SpeedData sales, _) => sales.time,
+                                        yValueMapper: (SpeedData sales, _) => sales.speed,
+                                        name: 'Ideal',
+                                        color: Colors.yellow,
+                                      ),
+                                    ],
+                                  ),
+                                ),
                                 const SizedBox(height: 20,),
                                 // share challenge elevated icon button
                                 SizedBox(

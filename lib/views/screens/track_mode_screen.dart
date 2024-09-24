@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:log_my_ride/models/track.dart';
@@ -10,6 +11,7 @@ import 'package:log_my_ride/utils/constants.dart';
 import 'package:log_my_ride/utils/utils.dart';
 import 'package:log_my_ride/views/screens/current_session_screen.dart';
 import 'package:log_my_ride/views/screens/my_sessions_screen.dart';
+import 'package:log_my_ride/views/screens/track_ride_summary_screen.dart';
 import 'package:log_my_ride/views/widgets/app_container.dart';
 import 'package:log_my_ride/views/widgets/app_social.dart';
 import 'package:log_my_ride/views/widgets/chart_tile.dart';
@@ -19,6 +21,7 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../../controllers/user_controller.dart';
 import '../widgets/dummy_map_container.dart';
+import '../widgets/road_ride_tile.dart';
 import '../widgets/session_title.dart';
 
 class TrackModeScreen extends StatefulWidget {
@@ -36,6 +39,13 @@ class TrackModeScreen extends StatefulWidget {
 
 class _TrackModeScreenState extends State<TrackModeScreen> {
   var userController = Get.find<UserController>();
+
+  var trackRides = List.generate(5, (index) => {
+    'rideName': faker.company.name(),
+    'dateRecorded': DateFormat('MMM dd, yyyy').format(faker.date.dateTime(minYear: 2022, maxYear: 2022)),
+    'timeTaken': faker.randomGenerator.integer(45, min: 35),
+    'distanceTravelled': faker.randomGenerator.integer(45, min: 35),
+  });
 
   @override
   void dispose() {
@@ -95,54 +105,172 @@ class _TrackModeScreenState extends State<TrackModeScreen> {
               const SizedBox(height: 10),
               const Divider(),
               const SizedBox(height: 10),*/
-              const Padding(padding: EdgeInsets.all(10), child: Text('Previous Rides', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),)),
+
+              ElevatedButton(
+
+                style: ButtonStyle(
+                  minimumSize: WidgetStateProperty.all(const Size(double.infinity, 100)),
+
+                  shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  )),
+                ),
+                onPressed: () {
+                  setState(() {
+                    //widget.sessionStarted = !widget.sessionStarted;
+                    //show dialog to choose a vehicle
+                    showDialog(context: context, builder: (context) => StartSessionDialog(
+                      onSessionStart: (vehicle, track) {
+                        setState(() {
+                          widget.sessionStarted = true;
+                          Get.to(() => const CurrentSessionScreen());
+
+                        });
+                      },
+                    ));
+                  });
+                },
+                child: Text('START NEW SESSION', style:GoogleFonts.orbitron(fontSize: 12, fontWeight: FontWeight.bold, color: primaryColor),),
+              ),
+              /*AppContainer(
+                height: !widget.sessionStarted ? 100 : 430,
+                child: !widget.sessionStarted ? Center(
+                  child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          showDialog(context: context, builder: (context) => StartSessionDialog(
+                            onSessionStart: (vehicle, track) {
+                              setState(() {
+                                widget.sessionStarted = true;
+                                Get.to(() => CurrentSessionScreen());
+
+                              });
+                            },
+                          ));
+
+                          //widget.sessionStarted = !widget.sessionStarted;
+                        });
+                      }, child: const Text('Start Ride')),
+                ) : SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      //GPS Speed
+                      const ListTile(
+                        title: Text('GPS Speed'),
+                        trailing: Text('0 km/h', style: TextStyle(color: primaryColor, fontSize: 20),),
+                      ),
+                      const Divider(),
+                      // Lean Angle
+                      const ListTile(
+                        title: Text('Lean Angle'),
+                        trailing: Text('0 deg', style: TextStyle(color: primaryColor, fontSize: 20),),
+                      ),
+                      const Divider(),
+                      // Lean Angle
+                      ListTile(
+                        title: const Text('Lap Time'),
+                        trailing: Text(_formatTime(widget.timeElapsed), style: const TextStyle(color: primaryColor, fontSize: 20),),
+                      ),
+                      const Divider(),
+                      //predicted Best Time
+                      const ListTile(
+                        title: Text('Predicted Best Time'),
+                        trailing: Text('0:00', style: TextStyle(color: primaryColor, fontSize: 20),),
+                      ),
+                      const Divider(),
+                      //predicted Best Time
+                      ListTile(
+                        title: const Text('End Session'),
+                        trailing: Icon(LineIcons.stopCircleAlt, color: Colors.red,),
+                        onTap: () {
+                          setState(() {
+                            widget.timer.cancel();
+                            widget.sessionStarted = false;
+                            widget.timeElapsed = 0;
+                            widget.selectedTrack = null;
+                            widget.selectedVehicle = null;
+                          });
+                        },
+                      ),
+                      const Divider(),
+                      //predicted Best Time
+                      ListTile(
+                        title: const Text('Launch Dash'),
+                        trailing: Icon(Icons.fullscreen, color: Colors.lightGreenAccent,),
+                        onTap: () {
+                          setState(() {
+                            widget.timer.cancel();
+                            widget.sessionStarted = false;
+                            widget.timeElapsed = 0;
+                            widget.selectedTrack = null;
+                            widget.selectedVehicle = null;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),*/
+              const SizedBox(height: 8,),
+              const Padding(padding: EdgeInsets.all(10), child: Text('Previous Rides', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
               //Date Range filter
               Padding(
                 padding: const EdgeInsets.all(10),
                 child: Column(
-                  children: [
-                    DropdownButtonFormField(
-                      items: userController.tracks.map((track) => DropdownMenuItem(value: track, child: Text(track.track_name))).toList(),
-                      decoration: InputDecoration(
-                        labelText: 'Select a Track',
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          widget.selectedTrack = value as Track;
-                        });
-                      },
-                    ),
-                    //date range filter
-                    const SizedBox(height: 10),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton.icon(
-                        style: ButtonStyle(
-                          shape: WidgetStateProperty.all(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
+                    children: [
+                      DropdownButtonFormField(
+                        items: userController.tracks.map((track) => DropdownMenuItem(value: track, child: Text(track.track_name))).toList(),
+                        decoration: InputDecoration(
+                          labelText: 'Select a Track',
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
                           ),
+
                         ),
-                          onPressed: () {
-                            showDateRangePicker(
+                        onChanged: (value) {
+                          setState(() {
+                            widget.selectedTrack = value as Track;
+                          });
+                        },
+                      ),
+                      //date range filter
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                            style: ButtonStyle(
+                              shape: WidgetStateProperty.all(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                            onPressed: () {
+                              showDateRangePicker(
                                 context: context,
                                 firstDate:  DateTime.now().subtract(const Duration(days: 300)),
                                 lastDate: DateTime.now().add(const Duration(days: 30)),
                                 builder: (context, child) => child!,
-                            );
-                      }, label: Text(selectedDateRange), icon: const Icon(Icons.date_range)),
-                    )
+                              );
+                            }, label: Text(selectedDateRange), icon: const Icon(Icons.date_range)),
+                      )
 
-                  ]
+                    ]
                 ),
               ),
-              AppContainer(
+              ...trackRides.map(
+                      (ride) => RoadRideTile(
+                      rideName: ride['rideName'].toString(),
+                      dateRecorded: ride['dateRecorded'].toString(),
+                      timeTaken: ride['timeTaken'].toString(),
+                      distanceTravelled: ride['distanceTravelled'].toString(),
+                      onTap: () {
+                        Get.to(() => TrackRideSummaryScreen());
+                      }
+                      )
+              ),
+              /*AppContainer(
                   child: Column(
                     children: [
                       ListTile(
@@ -246,89 +374,9 @@ class _TrackModeScreenState extends State<TrackModeScreen> {
                       )
                     ],
                   )
-              ),
-              const Divider(),
-              const Padding(padding: EdgeInsets.all(10), child: Text('Live Session', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),)),
-              AppContainer(
-                height: !widget.sessionStarted ? 100 : 430,
-                child: !widget.sessionStarted ? Center(
-                  child: ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          showDialog(context: context, builder: (context) => StartSessionDialog(
-                            onSessionStart: (vehicle, track) {
-                              setState(() {
-                                widget.sessionStarted = true;
-                                Get.to(() => CurrentSessionScreen());
+              ),*/
 
-                              });
-                            },
-                          ));
-
-                          //widget.sessionStarted = !widget.sessionStarted;
-                        });
-                  }, child: const Text('Start Session')),
-                ) : SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      //GPS Speed
-                      const ListTile(
-                        title: Text('GPS Speed'),
-                        trailing: Text('0 km/h', style: TextStyle(color: primaryColor, fontSize: 20),),
-                      ),
-                      const Divider(),
-                      // Lean Angle
-                      const ListTile(
-                        title: Text('Lean Angle'),
-                        trailing: Text('0 deg', style: TextStyle(color: primaryColor, fontSize: 20),),
-                      ),
-                      const Divider(),
-                      // Lean Angle
-                      ListTile(
-                        title: const Text('Lap Time'),
-                        trailing: Text(_formatTime(widget.timeElapsed), style: const TextStyle(color: primaryColor, fontSize: 20),),
-                      ),
-                      const Divider(),
-                      //predicted Best Time
-                      const ListTile(
-                        title: Text('Predicted Best Time'),
-                        trailing: Text('0:00', style: TextStyle(color: primaryColor, fontSize: 20),),
-                      ),
-                      const Divider(),
-                      //predicted Best Time
-                      ListTile(
-                        title: const Text('End Session'),
-                        trailing: Icon(LineIcons.stopCircleAlt, color: Colors.red,),
-                        onTap: () {
-                          setState(() {
-                            widget.timer.cancel();
-                            widget.sessionStarted = false;
-                            widget.timeElapsed = 0;
-                            widget.selectedTrack = null;
-                            widget.selectedVehicle = null;
-                          });
-                        },
-                      ),
-                      const Divider(),
-                      //predicted Best Time
-                      ListTile(
-                        title: const Text('Launch Dash'),
-                        trailing: Icon(Icons.fullscreen, color: Colors.lightGreenAccent,),
-                        onTap: () {
-                          setState(() {
-                            widget.timer.cancel();
-                            widget.sessionStarted = false;
-                            widget.timeElapsed = 0;
-                            widget.selectedTrack = null;
-                            widget.selectedVehicle = null;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const Divider(),
+             /* const Divider(),
               const Padding(padding: EdgeInsets.symmetric(horizontal: 10), child: Text('Analyze a Ride', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),)),
               const Padding(padding: EdgeInsets.symmetric(horizontal: 10), child: Text('Please select a session to analyze')),
               Padding(
@@ -381,11 +429,21 @@ class _TrackModeScreenState extends State<TrackModeScreen> {
                 ),
               ),
               DummyMapContainer(width:double.infinity, height:200),
-              RandomSplineChart(),
+              RandomSplineChart(series: [
+                //spline series speed data
+                SplineSeries<SpeedData, String>(
+                  dataSource: generateSpeedData(10),
+                  xValueMapper: (SpeedData speed, _) => speed.time,
+                  yValueMapper: (SpeedData speed, _) => speed.speed,
+                  name: 'Speed',
+                  color: primaryColor,
+                ),
+
+              ],),
               const SizedBox(height: 20),
               const Divider(),
               const SizedBox(height: 20),
-              const AppSocial(),
+              const AppSocial(),*/
 
               /*Obx( () {
                 if (userController.sessions.isEmpty) {

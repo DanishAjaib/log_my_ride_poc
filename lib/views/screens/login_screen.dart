@@ -6,6 +6,14 @@ import 'package:log_my_ride/utils/utils.dart';
 import 'package:log_my_ride/views/screens/main_screen.dart';
 import 'package:log_my_ride/views/screens/rider_home_screen.dart';
 
+import '../../controllers/user_controller.dart';
+
+enum UserType {
+  RIDER,
+  PROMOTER,
+  CLUB,
+  COACH
+}
 class LoginScreen extends StatefulWidget {
 
   bool rememberMe = false;
@@ -16,8 +24,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
   @override
   Widget build(BuildContext context) {
+
+    var userController = Get.put(UserController());
     return SafeArea(
         child: Scaffold(
           backgroundColor: Colors.black,
@@ -70,10 +81,24 @@ class _LoginScreenState extends State<LoginScreen> {
                   Divider(color: Colors.grey.withOpacity(0.3),),
                   const SizedBox(height: 20),
                   getActionButton('Login', Colors.orange, () {
+                    userController.selectedUserType.value = UserType.RIDER;
                     Get.to(() => const MainScreen());
                   }),
                   const SizedBox(height: 10),
-                  getActionButton('Promoter Login', Colors.white, () {}),
+                  getActionButton('Promoter Login', Colors.white, () {
+                    userController.selectedUserType.value = UserType.PROMOTER;
+                    Get.to(() => const MainScreen());
+                  }),
+                  const SizedBox(height: 10),
+                  getActionButton('Club Login', Colors.white, () {
+                    userController.selectedUserType.value = UserType.CLUB;
+                    Get.to(() => const MainScreen());
+                  }),
+                  const SizedBox(height: 10),
+                  getActionButton('Coach Login', Colors.white, () {
+                    userController.selectedUserType.value = UserType.COACH;
+                    Get.to(() => const MainScreen());
+                  }),
                   const SizedBox(height: 20),
                   getHorizontalDividerWithText('Or with'),
                   const SizedBox(height: 20),

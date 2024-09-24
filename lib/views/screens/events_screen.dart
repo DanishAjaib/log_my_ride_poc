@@ -1,9 +1,18 @@
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:log_my_ride/views/screens/event_summary_screen.dart';
+import 'package:log_my_ride/views/screens/new_road_coach_event_screen.dart';
+import 'package:log_my_ride/views/screens/new_road_event_screen.dart';
+import 'package:log_my_ride/views/screens/new_road_promoter_event_screen.dart';
+import 'package:log_my_ride/views/screens/new_track_coach_event_screen.dart';
+import 'package:log_my_ride/views/screens/new_track_event_screen.dart';
+import 'package:log_my_ride/views/screens/new_track_promoter_event_screen.dart';
 import 'package:log_my_ride/views/widgets/event_tile.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
+import '../../controllers/events_controller.dart';
 import '../../utils/constants.dart';
 
 class EventsScreen extends StatefulWidget {
@@ -15,9 +24,85 @@ class EventsScreen extends StatefulWidget {
 
 class _EventsScreenState extends State<EventsScreen> {
   var selectedMode = 0;
+  var eventsController = Get.put(EventController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: primaryColor,
+        onPressed: () {
+          // select the type of event to create {Track, Road}
+          showDialog(context: context, builder: (context) {
+            return AlertDialog(
+              title: const Text('Create a new ride'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    title: const Text('Track'),
+                    onTap: () {
+                      Get.to(() => const NewTrackRideEventScreen());
+                      //Navigator.pop(context);
+                    },
+
+                  ),
+                  ListTile(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    title: const Text('Road'),
+                    onTap: () {
+                      Navigator.pop(context);
+                        Get.to(() => const NewRideEventScreen());
+                        //Navigator.pop(context);
+                      },
+
+                  ),
+                  const Divider(),
+                  ListTile(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    title: const Text('Track - Promoter'),
+                    onTap: () {
+                      Get.to(() => const NewTrackRidePromoterEventScreen());
+                      //Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    title: const Text('Road - Promoter'),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Get.to(() => const NewRidePromoterEventScreen());
+                      //Navigator.pop(context);
+                    },
+                  ),
+                  const Divider(),
+                  ListTile(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    title: const Text('Track - Coach'),
+                    onTap: () {
+                      Get.to(() => const NewTrackRideCoachEventScreen());
+                      //Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    title: const Text('Road - Coach'),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Get.to(() => const NewRideCoachEventScreen());
+                      //Navigator.pop(context);
+                    },
+                  ),
+
+                ],
+              ),
+            );
+          });
+
+        },
+        child: const Icon(LineIcons.plus),
+      ),
       appBar: AppBar(
         title: const Text('Events'),
         actions: [
@@ -41,39 +126,32 @@ class _EventsScreenState extends State<EventsScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
-        child: selectedMode == 0 ? const SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+        child: selectedMode == 0 ? SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Upcoming Events', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-              Text('Events you might be interested in based on your location', style: TextStyle(fontSize: 12, color: Colors.grey),),
-              SizedBox(height: 20,),
-              EventTile(),
-              SizedBox(height: 5,),
-              EventTile(),
-              SizedBox(height: 5,),
-              EventTile(),
-              SizedBox(height: 15,),
-              Text('Previous Events', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-              Text('Events you have participated in the past', style: TextStyle(fontSize: 12, color: Colors.grey),),
-              SizedBox(height: 20,),
-              EventTile(),
-              SizedBox(height: 5,),
-              EventTile(),
-              SizedBox(height: 5,),
-              EventTile(),
-              SizedBox(height: 5,),
-              EventTile(),
-              SizedBox(height: 5,),
-              EventTile(),
-              SizedBox(height: 5,),
-              EventTile(),
-              SizedBox(height: 5,),
-              EventTile(),
-              SizedBox(height: 5,),
-              EventTile(),
-              SizedBox(height: 15,),
+              const Text('Upcoming Events', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+              const SizedBox(height: 10,),
+              Obx(() {
+
+                return ListView.builder(
+
+                  shrinkWrap: true,
+                  itemCount: eventsController.events.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 5),
+                      child: EventTile(
+                        onPressed: () {
+                          Get.to(() => EventSummaryScreen(event: eventsController.events[index],));
+                        },
+                      ),
+                    );
+                  },
+                );
+              }),
+
             ],
           ),
         ) : Center(
@@ -86,7 +164,7 @@ class _EventsScreenState extends State<EventsScreen> {
             ),
 
             view: CalendarView.month,
-            monthViewSettings: MonthViewSettings(showAgenda: true),
+            monthViewSettings: const MonthViewSettings(showAgenda: true),
             dataSource: EventsDataSource(_getDataSource()),
           ),
         ),

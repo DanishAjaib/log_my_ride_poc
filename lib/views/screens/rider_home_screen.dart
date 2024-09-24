@@ -14,6 +14,9 @@ import 'package:log_my_ride/views/widgets/home_button.dart';
 import 'package:log_my_ride/views/widgets/square_button.dart';
 import 'package:multiavatar/multiavatar.dart';
 
+import '../../controllers/logging_controller.dart';
+import '../../controllers/navigation_controller.dart';
+
 class RiderHomeScreen extends StatefulWidget {
 
   const RiderHomeScreen({super.key});
@@ -26,7 +29,10 @@ class RiderHomeScreen extends StatefulWidget {
 
 class _RiderHomeScreenState extends State<RiderHomeScreen> {
 
-  UserController userController = Get.put(UserController());
+  var  userController = Get.find<UserController>();
+
+  var logginController = Get.put(LoggingController());
+  var navigationController = Get.put(NavigationController());
 
   @override
   void initState() {
@@ -48,7 +54,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
             children: [
               InkWell(
                 onTap: () {
-                  Get.to(() => MyProfileScreen());
+                  Get.to(() => const MyProfileScreen());
 
                 },
                 child: Container(
@@ -78,7 +84,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
               HomeButton(
                   iconText: '1',
                   column2Children: [
-                    Text('MY RIDE', style: const TextStyle(color: Colors.grey, fontSize: 10, fontWeight: FontWeight.bold),),
+                    const Text('MY RIDE', style: TextStyle(color: Colors.grey, fontSize: 10, fontWeight: FontWeight.bold),),
                     Text(faker.vehicle.model(), style: const TextStyle(color: primaryColor, fontSize: 15),),
                     Text('Last Ride ${getRandomDateTime()}', style: const TextStyle(color: Colors.white, fontSize: 12),),
                   ],
@@ -88,7 +94,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
               HomeButton(
                   iconText: '1',
                   column2Children: [
-                    Text('GPS', style: const TextStyle(color: Colors.grey, fontSize: 10, fontWeight: FontWeight.bold),),
+                    const Text('GPS', style: TextStyle(color: Colors.grey, fontSize: 10, fontWeight: FontWeight.bold),),
                     Text(faker.vehicle.model(), style: const TextStyle(color: primaryColor, fontSize: 15, fontWeight: FontWeight.bold),),
                     Text('Static at  ${getRandomDateTime()}', style: const TextStyle(color: Colors.white, fontSize: 12),),
                   ],

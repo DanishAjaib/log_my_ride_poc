@@ -1,12 +1,15 @@
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:log_my_ride/controllers/location_controller.dart';
 import 'package:log_my_ride/controllers/user_controller.dart';
 import 'package:log_my_ride/views/screens/events_screen.dart';
+import 'package:log_my_ride/views/screens/gps_mode_screen.dart';
 import 'package:log_my_ride/views/screens/login_screen.dart';
 import 'package:log_my_ride/views/screens/my_challenges_screen.dart';
 import 'package:log_my_ride/views/screens/my_sessions_screen.dart';
@@ -33,6 +36,7 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
   final PageController _pageController = PageController();
   final UserController userController = Get.put(UserController());
+  final LocationController _mapController = Get.put(LocationController());
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +154,7 @@ class _MainScreenState extends State<MainScreen> {
                   Get.to(() => const MyProfileScreen());
                 },
               ),
-              ListTile(
+              /*ListTile(
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(topRight: Radius.circular(20), bottomRight: Radius.circular(20)),
                 ),
@@ -160,12 +164,12 @@ class _MainScreenState extends State<MainScreen> {
                   Navigator.pop(context);
                   Get.to(() => const MySessionsScreen());
                 },
-              ),
+              ),*/
               ListTile(
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(topRight: Radius.circular(20), bottomRight: Radius.circular(20)),
                 ),
-                trailing: Icon(LineIcons.medal, color: Colors.white,),
+                trailing: const Icon(LineIcons.medal, color: Colors.white,),
                 title: const Text('My Challenges', style: TextStyle(color: Colors.white),),
                 onTap: () {
                   Navigator.pop(context);
@@ -176,7 +180,7 @@ class _MainScreenState extends State<MainScreen> {
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(topRight: Radius.circular(20), bottomRight: Radius.circular(20)),
                 ),
-                trailing: Icon(LineIcons.calendar, color: Colors.white,),
+                trailing: const Icon(LineIcons.calendar, color: Colors.white,),
                 title: const Text('My Events', style: TextStyle(color: Colors.white),),
                 onTap: () {
                   Navigator.pop(context);
@@ -224,6 +228,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ),
         child: NavigationBar(
+
           indicatorColor: primaryColor,
 
           elevation: 3,
@@ -271,6 +276,7 @@ class _MainScreenState extends State<MainScreen> {
         ),
       ),
       body: PageView(
+        physics: const NeverScrollableScrollPhysics(),
         controller: _pageController,
         onPageChanged: (index) {
           setState(() {
@@ -279,7 +285,7 @@ class _MainScreenState extends State<MainScreen> {
         },
         children: [
           const RiderHomeScreen(),
-          const TrackMyBikeScreen(),
+          const GpsModeScreen(),
           TrackModeScreen(),
           RoadModeScreen(),
           TuningModeScreen(),

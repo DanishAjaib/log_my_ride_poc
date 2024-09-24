@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:log_my_ride/utils/constants.dart';
+import 'package:log_my_ride/views/screens/session_summary_screen.dart';
 import 'package:log_my_ride/views/widgets/road_ride_tile.dart';
 
 import '../../controllers/user_controller.dart';
@@ -59,7 +60,6 @@ class _RoadModeScreenState extends State<RoadModeScreen> {
               ElevatedButton(
                 style: ButtonStyle(
                   minimumSize: WidgetStateProperty.all(const Size(double.infinity, 100)),
-                  backgroundColor: WidgetStateProperty.all(primaryColor),
 
                   shape: WidgetStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -94,101 +94,9 @@ class _RoadModeScreenState extends State<RoadModeScreen> {
                     });
                   });
                 },
-                child: Text('START NEW RIDE', style:GoogleFonts.orbitron(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),),
+                child: Text('START NEW RIDE', style:GoogleFonts.orbitron(fontSize: 12, fontWeight: FontWeight.bold, color: primaryColor),),
               ),
               const SizedBox(height: 15,),
-              /*AppContainer(
-
-                height: !widget.sessionStarted ? 100 : 430,
-                child: !widget.sessionStarted ? Center(
-                  child: ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          //widget.sessionStarted = !widget.sessionStarted;
-                          //show dialog to choose a vehicle
-                          showDialog(context: context, builder: (context) {
-                            return AlertDialog(
-                              title: const Text('Select Vehicle'),
-                              content: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: userController.vehicles.map((vehicle) => ListTile(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  title: Text(vehicle.vehicle_name),
-                                  onTap: () {
-                                    setState(() {
-                                      widget.selectedVehicle = vehicle;
-                                      widget.sessionStarted = true;
-                                    });
-                                    Navigator.pop(context);
-                                  },
-                                )).toList(),
-                              ),
-                            );
-                          });
-                        });
-                      }, child: const Text('Start Ride')),
-                ) : SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      //GPS Speed
-                      const ListTile(
-                        title: Text('GPS Speed'),
-                        trailing: Text('0 km/h', style: TextStyle(color: primaryColor, fontSize: 20),),
-                      ),
-                      const Divider(),
-                      // Lean Angle
-                      const ListTile(
-                        title: Text('Lean Angle'),
-                        trailing: Text('0 deg', style: TextStyle(color: primaryColor, fontSize: 20),),
-                      ),
-                      const Divider(),
-                      // Lean Angle
-                      ListTile(
-                        title: const Text('Lap Time'),
-                        trailing: Text(_formatTime(widget.timeElapsed), style: const TextStyle(color: primaryColor, fontSize: 20),),
-                      ),
-                      const Divider(),
-                      //predicted Best Time
-                      const ListTile(
-                        title: Text('Predicted Best Time'),
-                        trailing: Text('0:00', style: TextStyle(color: primaryColor, fontSize: 20),),
-                      ),
-                      const Divider(),
-                      //predicted Best Time
-                      ListTile(
-                        title: const Text('End Session'),
-                        trailing: const Icon(LineIcons.stopCircleAlt, color: Colors.red,),
-                        onTap: () {
-                          setState(() {
-                            widget.timer.cancel();
-                            widget.sessionStarted = false;
-                            widget.timeElapsed = 0;
-                            widget.selectedTrack = null;
-                            widget.selectedVehicle = null;
-                          });
-                        },
-                      ),
-                      const Divider(),
-                      //predicted Best Time
-                      ListTile(
-                        title: const Text('Launch Dash'),
-                        trailing: const Icon(Icons.fullscreen, color: Colors.lightGreenAccent,),
-                        onTap: () {
-                          setState(() {
-                            widget.timer.cancel();
-                            widget.sessionStarted = false;
-                            widget.timeElapsed = 0;
-                            widget.selectedTrack = null;
-                            widget.selectedVehicle = null;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),*/
              Row(
                children: [
                  const Padding(padding: EdgeInsets.all(10), child: Text('Previous Rides', style: TextStyle(fontSize: subTitleSize),)),
@@ -218,7 +126,11 @@ class _RoadModeScreenState extends State<RoadModeScreen> {
                           rideName: ride['rideName'].toString(),
                           dateRecorded: ride['dateRecorded'].toString(),
                           timeTaken: ride['timeTaken'].toString(),
-                          distanceTravelled: ride['distanceTravelled'].toString())
+                          distanceTravelled: ride['distanceTravelled'].toString(),
+                          onTap: () {
+                            Get.to(() => const SessionSummaryScreen());
+                          }
+                      )
               ),
 
              /* AppContainer(

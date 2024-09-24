@@ -8,7 +8,8 @@ class RoadRideTile extends StatelessWidget {
   final String dateRecorded;
   final String timeTaken;
   final String distanceTravelled;
-  const RoadRideTile({super.key, required this.rideName, required this.dateRecorded, required this.timeTaken, required this.distanceTravelled});
+  final Function onTap;
+  const RoadRideTile({super.key, required this.rideName, required this.dateRecorded, required this.timeTaken, required this.distanceTravelled, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +23,11 @@ class RoadRideTile extends StatelessWidget {
                 ),
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              onTap();
+            },
             child: ListTile(
               trailing: const Icon(LineIcons.angleRight, color: primaryColor,),
-
               title: Text(getTruncatedText(rideName, 15), style: const TextStyle(fontSize: 16),),
               subtitle: Column(
                 children: [
@@ -42,7 +44,6 @@ class RoadRideTile extends StatelessWidget {
                       const Icon(Icons.directions_bike_outlined, size: 16, color: primaryColor,),
                       const SizedBox(width: 5),
                       Text( '$distanceTravelled kms', style: const TextStyle(fontSize: 12),),
-
                     ],
                   ),
                 ],

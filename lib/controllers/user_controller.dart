@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:log_my_ride/models/session.dart';
 import 'package:log_my_ride/models/track.dart';
 import 'package:log_my_ride/models/user.dart';
+import 'package:log_my_ride/views/screens/login_screen.dart';
 
 import '../models/vehicle.dart';
 
@@ -18,6 +19,8 @@ class UserController extends GetxController {
   final RxList<Vehicle> vehicles = <Vehicle>[].obs;
   final RxList<Session> sessions = <Session>[].obs;
   final RxList<Track> tracks = <Track>[].obs;
+  var userTypes = ['Rider', 'Coach', 'Promoter'];
+  Rx<UserType> selectedUserType = UserType.RIDER.obs;
 
   UserController(){
     onInit();

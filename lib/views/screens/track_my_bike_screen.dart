@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter/foundation.dart';
@@ -8,12 +7,8 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:log_my_ride/utils/constants.dart';
-import 'package:log_my_ride/utils/line_chart_painter.dart';
 import 'package:log_my_ride/views/widgets/app_container.dart';
-import 'package:log_my_ride/views/widgets/dummy_map_container.dart';
-import 'package:log_my_ride/views/widgets/metric_container.dart';
 import 'package:log_my_ride/views/widgets/ride_tile.dart';
-import 'package:log_my_ride/views/widgets/session_title.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
 import '../../controllers/user_controller.dart';
