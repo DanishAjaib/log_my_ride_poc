@@ -9,7 +9,8 @@ import 'package:log_my_ride/views/widgets/app_container.dart';
 
 class EventTile extends StatelessWidget {
   Function? onPressed;
-  EventTile({super.key, this.onPressed});
+  Map<String, dynamic> event;
+  EventTile({super.key, this.onPressed, required this.event});
 
   @override
   Widget build(BuildContext context) {
@@ -28,28 +29,54 @@ class EventTile extends StatelessWidget {
           }
         },
         child: ListTile(
-          trailing: const Icon(LineIcons.angleRight, color: primaryColor,),
+
           leading: CircleAvatar(
             backgroundColor: primaryColor,
             child: SvgPicture.memory(getRandomSvgCode()),
           ),
-          title: Text(getTruncatedText(faker.company.name().toString(), 15), style: const TextStyle(fontSize: 16),),
+          title: Row(
+            children: [
+              Text(getTruncatedText(faker.company.name().toString(), 15), style: const TextStyle(fontSize: 16),)
+            ],
+          ),
           subtitle: Column(
             children: [
               const SizedBox(height: 5,),
               Row(
                 children: [
                   const Icon(LineIcons.clock, size: 16, color: primaryColor,),
-                  const SizedBox(width: 5),
+                  const SizedBox(width: 3),
                   Text(DateFormat('MMM dd').format(faker.date.dateTime(minYear: 2022, maxYear: 2022)), style: const TextStyle(fontSize: 12),),
-                  const SizedBox(width: 5),
+                  const SizedBox(width: 8),
+                  Icon(getEventTypeIcon(event['eventType']), size: 16, color: primaryColor,),
+                  const SizedBox(width: 3),
+                  Text(getEventType(event['eventType']), style: const TextStyle(fontSize: 12),),
+                  const SizedBox(width: 8),
                   const Icon(LineIcons.mapMarker, size: 16, color: primaryColor,),
-                  Text(getTruncatedText(faker.address.city(), 15), style: const TextStyle(fontSize: 12),),
+                  const SizedBox(width: 3),
+                  Text(getTruncatedText(faker.address.city(), 10), style: const TextStyle(fontSize: 12),),
+
 
                 ],
               ),
             ],
           ),
         ));
+  }
+
+  String getEventType(eventType) {
+    if(eventType.contains('Road')) {
+      return 'Open';
+    } else {
+      return 'Closed';
+    }
+  }
+
+  IconData? getEventTypeIcon(event) {
+    if (event.contains('Road')) {
+      return LineIcons.circleNotched;
+    } else {
+      return LineIcons.circle;
+    }
   }
 }

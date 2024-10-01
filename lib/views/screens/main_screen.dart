@@ -8,12 +8,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:log_my_ride/controllers/location_controller.dart';
 import 'package:log_my_ride/controllers/user_controller.dart';
+import 'package:log_my_ride/views/screens/club_home_screen.dart';
+import 'package:log_my_ride/views/screens/coach_home_screen.dart';
 import 'package:log_my_ride/views/screens/events_screen.dart';
 import 'package:log_my_ride/views/screens/gps_mode_screen.dart';
 import 'package:log_my_ride/views/screens/login_screen.dart';
 import 'package:log_my_ride/views/screens/my_challenges_screen.dart';
 import 'package:log_my_ride/views/screens/my_sessions_screen.dart';
 import 'package:log_my_ride/views/screens/my_vehicles_screen.dart';
+import 'package:log_my_ride/views/screens/promoter_home_screen.dart';
 import 'package:log_my_ride/views/screens/rider_home_screen.dart';
 import 'package:log_my_ride/views/screens/road_mode_screen.dart';
 import 'package:log_my_ride/views/screens/settings_screen.dart';
@@ -136,7 +139,7 @@ class _MainScreenState extends State<MainScreen> {
                   borderRadius: BorderRadius.only(topRight: Radius.circular(20), bottomRight: Radius.circular(20)),
                 ),
                 iconColor: Colors.white,
-                trailing: Icon(LineIcons.home),
+                trailing: const Icon(LineIcons.home),
                 title: const Text('Home', style: TextStyle(color: Colors.white),),
                 onTap: () {
                   Navigator.pop(context);
@@ -147,7 +150,7 @@ class _MainScreenState extends State<MainScreen> {
                   borderRadius: BorderRadius.only(topRight: Radius.circular(20), bottomRight: Radius.circular(20)),
                 ),
                 iconColor: Colors.white,
-                trailing: Icon(LineIcons.user),
+                trailing: const Icon(LineIcons.user),
                 title: const Text('My Profile', style: TextStyle(color: Colors.white),),
                 onTap: () {
                   Navigator.pop(context);
@@ -170,7 +173,7 @@ class _MainScreenState extends State<MainScreen> {
                   borderRadius: BorderRadius.only(topRight: Radius.circular(20), bottomRight: Radius.circular(20)),
                 ),
                 trailing: const Icon(LineIcons.medal, color: Colors.white,),
-                title: const Text('My Challenges', style: TextStyle(color: Colors.white),),
+                title: const Text('ChallengeMyRide', style: TextStyle(color: Colors.white),),
                 onTap: () {
                   Navigator.pop(context);
                   Get.to(() => const MyChallengesScreen());
@@ -181,7 +184,7 @@ class _MainScreenState extends State<MainScreen> {
                   borderRadius: BorderRadius.only(topRight: Radius.circular(20), bottomRight: Radius.circular(20)),
                 ),
                 trailing: const Icon(LineIcons.calendar, color: Colors.white,),
-                title: const Text('My Events', style: TextStyle(color: Colors.white),),
+                title: const Text('FindARide', style: TextStyle(color: Colors.white),),
                 onTap: () {
                   Navigator.pop(context);
                   Get.to(() => const EventsScreen());
@@ -204,7 +207,7 @@ class _MainScreenState extends State<MainScreen> {
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(topRight: Radius.circular(20), bottomRight: Radius.circular(20)),
                 ),
-                trailing: Icon(LineIcons.alternateSignOut),
+                trailing: const Icon(LineIcons.alternateSignOut),
                 title: const Text('Logout', style: TextStyle(color: Colors.white),),
                 onTap: () {
                   Navigator.pop(context);
@@ -215,65 +218,101 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ),
 
-      bottomNavigationBar: NavigationBarTheme(
+      bottomNavigationBar: Stack(
+        children: [
+          NavigationBarTheme(
+            data: NavigationBarThemeData(
+              labelTextStyle: WidgetStateProperty.all(
+                GoogleFonts.roboto(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            child: NavigationBar(
+              indicatorColor: primaryColor,
+              elevation: 3,
+              labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+              selectedIndex: _selectedIndex,
+              onDestinationSelected: (index) {
+                _pageController.animateToPage(
+                  index,
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.easeInOut,
+                );
+              },
+              destinations: [
+                NavigationDestination(
+                  icon: SvgPicture.asset('assets/icons/home_icon.svg',
+                    width: 25, color: Colors.white,),
+                  label: 'Home',
+                ),
+                NavigationDestination(
+                  icon: SvgPicture.asset('assets/icons/map_icon.svg',
+                    width: 25,
+                    color: Colors.white,),
+                  label: 'GPS',
+                ),
+                const Spacer(),
+                //const SizedBox(width: 100),
+                //add button
+                const NavigationDestination(
+                  icon: Icon(LineIcons.biking, color: Colors.white,),
+                  label: 'LogMyRide',
+                ),
 
-        data: NavigationBarThemeData(
-
-          labelTextStyle: WidgetStateProperty.all(
-            GoogleFonts.roboto(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              color: Colors.white,
+                NavigationDestination(
+                  icon: SvgPicture.asset('assets/icons/settings_icon.svg', width: 25, color: _selectedIndex == 4 ? Colors.black : Colors.white,),
+                  label: 'Tuning Mode',
+                ),
+              ],
             ),
           ),
-        ),
-        child: NavigationBar(
+          Positioned(
+            bottom: 15,
+            left: MediaQuery.of(context).size.width / 2 - 30,
 
-          indicatorColor: primaryColor,
-
-          elevation: 3,
-          labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-          selectedIndex: _selectedIndex,
-          onDestinationSelected: (index) {
-            _pageController.animateToPage(
-              index,
-              duration: const Duration(milliseconds: 400),
-              curve: Curves.easeInOut,
-            );
-          },
-          destinations: [
-            NavigationDestination(
-              icon: SvgPicture.asset('assets/icons/home_icon.svg',
-                width: 25, color: Colors.white,),
-                label: 'Home',
-            ),
-            NavigationDestination(
-              icon: SvgPicture.asset('assets/icons/map_icon.svg',
-              width: 25,
-              color: Colors.white,),
-              label: 'GPS',
-            ),
-            NavigationDestination(
-              icon: SvgPicture.asset(
-                'assets/icons/bike_icon.svg',
-                width: 25,
-                color:Colors.white,
+            child: FloatingActionButton(
+              backgroundColor: primaryColor,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(50)),
               ),
-              label: 'Track Mode',
+              onPressed: () {
+                // select track mode or ride mode
+                showDialog(context: context, builder: (context) {
+                  return AlertDialog(
+                    title: const Text('Select Mode'),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ListTile(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          title: const Text('Track Mode'),
+                          onTap: () {
+                            Navigator.pop(context);
+                            //_pageController.animateToPage(2, duration: const Duration(milliseconds: 400), curve: Curves.easeInOut);
+                            Get.to(() => TrackModeScreen());
+                          },
+                        ),
+                        ListTile(
+                          title: const Text('Road Mode'),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          onTap: () {
+                            Navigator.pop(context);
+                            Get.to(() => RoadModeScreen());
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                });
+              },
+              child: const Icon(Icons.add),
             ),
-            NavigationDestination(
-              icon: SvgPicture.asset(
-                'assets/icons/road_icon.svg',
-                 width: 25,
-                 color:Colors.white,),
-              label: 'Road Mode',
-            ),
-            NavigationDestination(
-              icon: SvgPicture.asset('assets/icons/settings_icon.svg', width: 25, color: _selectedIndex == 4 ? Colors.black : Colors.white,),
-              label: 'Tuning Mode',
-            ),
-          ],
-        ),
+          ),
+
+        ],
       ),
       body: PageView(
         physics: const NeverScrollableScrollPhysics(),
@@ -283,14 +322,54 @@ class _MainScreenState extends State<MainScreen> {
             _selectedIndex = index;
           });
         },
-        children: [
-          const RiderHomeScreen(),
-          const GpsModeScreen(),
-          TrackModeScreen(),
-          RoadModeScreen(),
-          TuningModeScreen(),
-        ],
+        children: getUserTypeScreens(),
       )
     );
   }
+
+  getUserTypeScreens() {
+    switch(userController.selectedUserType.value) {
+      case UserType.RIDER:
+        return [
+          const RiderHomeScreen(),
+          const GpsModeScreen(),
+          Container(),
+          const TrackMyBikeScreen(),
+          TuningModeScreen(),
+        ];
+      case UserType.PROMOTER:
+        return [
+          const PromoterHomeScreen(),
+          const GpsModeScreen(),
+          Container(),
+          const TrackMyBikeScreen(),
+          TuningModeScreen(),
+        ];
+      case UserType.COACH:
+        return [
+          const CoachHomeScreen(),
+          const GpsModeScreen(),
+          Container(),
+          const TrackMyBikeScreen(),
+          TuningModeScreen(),
+        ];
+      case UserType.CLUB:
+        return [
+          const ClubHomeScreen(),
+          const GpsModeScreen(),
+          Container(),
+          const TrackMyBikeScreen(),
+          TuningModeScreen(),
+        ];
+      default:
+        return [
+          const RiderHomeScreen(),
+          const GpsModeScreen(),
+          Container(),
+          const TrackMyBikeScreen(),
+          TuningModeScreen(),
+        ];
+    }
+  }
 }
+//rider_home_screen.dart

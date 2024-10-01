@@ -135,8 +135,8 @@ class _NewGroupDialogState extends State<NewGroupDialog> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Create a new group', style: TextStyle(fontSize: 16)),
-          
+              const Text('Create a new group', style: TextStyle(fontSize: 16)),
+
               const SizedBox(height: 25,),
               TextField(
                 controller: _nameController,
@@ -168,6 +168,7 @@ class _NewGroupDialogState extends State<NewGroupDialog> {
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                     labelText: 'Extra Session Time (mins)',
+
                     hintText: 'Time(mins)',
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10)

@@ -1,4 +1,5 @@
 import 'package:faker/faker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -33,6 +34,11 @@ class _GpsModeScreenState extends State<GpsModeScreen> with SingleTickerProvider
   var sheetExpanded = false;
   var currentGeoFence;
   Region? currentRegion ;
+  bool creatingGeofence = false;
+  double geofenceRadius = 200;
+
+  double top = 200;
+  double left = 200;
 
   @override
   void initState() {
@@ -72,6 +78,7 @@ class _GpsModeScreenState extends State<GpsModeScreen> with SingleTickerProvider
           children: [
             OSMFlutter(
 
+
               onMapMoved: (geoPoint) {
                 setState(() {
                   currentBoundingBox = geoPoint.boundingBox;
@@ -108,14 +115,17 @@ class _GpsModeScreenState extends State<GpsModeScreen> with SingleTickerProvider
                 locationController.controller.value.listenerMapSingleTapping.addListener(() {
                   //get geoPoint
                   var geoPoint = locationController.controller.value.listenerMapSingleTapping.value;
-                  print('GeoPoint tapped: $geoPoint');
+                  if(kDebugMode) print('GeoPoint tapped: $geoPoint');
                 });
                 //locationController.controller.value.rotateMapCamera(logginController.rotation.value);
 
-                locationController.drawRoad(startPoint: GeoPoint(
+                /*locationController.drawRoad(startPoint: GeoPoint(
                     latitude: locationController.currentPosition.value.latitude,
                     longitude: locationController.currentPosition.value.longitude), endPoint: GeoPoint(
                     latitude: locationController.currentPosition.value.latitude + 0.03,
+
+
+
                     longitude: locationController.currentPosition.value.longitude + 0.01
                 ));
                 locationController.controller.value.addMarker(
@@ -130,12 +140,14 @@ class _GpsModeScreenState extends State<GpsModeScreen> with SingleTickerProvider
                         child: SvgPicture.memory(svgCode),
                       ),
                     )
-                );
+                );*/
 
               },
               controller: locationController.controller.value,
               mapIsLoading: const Center(child: CircularProgressIndicator(color: primaryColor, strokeWidth: 2,)),
+
               osmOption:  OSMOption(
+
                 showDefaultInfoWindow: true,
 
 
@@ -162,6 +174,7 @@ class _GpsModeScreenState extends State<GpsModeScreen> with SingleTickerProvider
 
               ),
             ),
+
             Positioned(
               top: 20,
               left: 20,
@@ -194,6 +207,40 @@ class _GpsModeScreenState extends State<GpsModeScreen> with SingleTickerProvider
                 ],
               )
             ),
+            Positioned(
+              top: top,
+              left: left,
+              child: Draggable(
+                feedback: Container(
+                  width: geofenceRadius,
+                  height: geofenceRadius,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.transparent,
+                    border: Border.all(color: primaryColor, width: 2),
+                  ),
+                ),
+                childWhenDragging: Container(), // Optionally, you can provide a different widget when dragging
+                child: Container(
+                  width: geofenceRadius,
+                  height: geofenceRadius,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.deepOrange.withOpacity(0.3),
+                    border: Border.all(color: primaryColor, width: 2),
+                  ),
+                ),
+                onDragEnd: (details) {
+                  setState(() {
+                    // Update the position of the circle based on the drag details
+                    // Adjust the top and left values as needed
+                    top = details.offset.dy - 88;
+                    left = details.offset.dx;
+                  });
+                },
+              ),
+            ),
+
 
             Positioned(
               bottom: 200,
@@ -204,14 +251,65 @@ class _GpsModeScreenState extends State<GpsModeScreen> with SingleTickerProvider
                 opacity: sheetExpanded ? 1 : 0,
                 child: AppContainer(
                   height: sheetExpanded ? 200 : 0,
+                  color: Colors.transparent,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      FloatingActionButton(onPressed: () async {
-                        navigationController.drawCircle(CircleOSM(key: 'fence1', centerPoint: currentCenter!, radius: 50, color: primaryColor, strokeWidth: 8));
-                      }, backgroundColor: primaryColor, child: const Icon(Icons.add),),
-                      const SizedBox(height: 10,),
-                      const Text('Create a new Geofence', style: TextStyle(color: Colors.white, fontSize: 15),),
+                      //draw circle
+
+                      if(creatingGeofence) Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              FloatingActionButton(onPressed: () {
+                                setState(() {
+                                  creatingGeofence = false;
+                                });
+                              }, backgroundColor: primaryColor, child: const Icon(Icons.close),),
+
+
+                              FloatingActionButton(onPressed: () {
+                                setState(() {
+                                  creatingGeofence = false;
+                                });
+                              }, backgroundColor: Colors.green, child: const Icon(Icons.check),),
+                            ],
+                          ),
+                          SliderTheme(
+
+                            data:  const SliderThemeData(
+                              thumbColor: primaryColor,
+                              activeTrackColor: primaryColor,
+                              inactiveTrackColor: Colors.grey,
+                              trackHeight: 5,
+                              thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10),
+                              overlayShape: RoundSliderOverlayShape(overlayRadius: 20),
+                            ),
+                            child: Slider(
+                            value: geofenceRadius,
+                            min: 100,
+                            max: 400,
+                            onChanged: (value) {
+                              setState(() {
+                                geofenceRadius = value;
+                              });
+
+                            },
+                          ),),
+                        ],
+                      ),
+                      if(!creatingGeofence)
+                        ...[
+                          FloatingActionButton(onPressed: () async {
+                            setState(() {
+                              creatingGeofence = true;
+                            });
+                          }, backgroundColor: primaryColor, child: const Icon(Icons.add),),
+                          const SizedBox(height: 10,),
+                          const Text('Create a new Geofence', style: TextStyle(color: Colors.black, fontSize: 15),),
+                        ]
                     ],
                   ),
                 ),

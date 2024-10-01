@@ -1,8 +1,12 @@
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:log_my_ride/controllers/user_controller.dart';
+import 'package:log_my_ride/utils/utils.dart';
 import 'package:log_my_ride/views/screens/event_summary_screen.dart';
+import 'package:log_my_ride/views/screens/login_screen.dart';
 import 'package:log_my_ride/views/screens/new_road_coach_event_screen.dart';
 import 'package:log_my_ride/views/screens/new_road_event_screen.dart';
 import 'package:log_my_ride/views/screens/new_road_promoter_event_screen.dart';
@@ -26,6 +30,11 @@ class _EventsScreenState extends State<EventsScreen> {
   var selectedMode = 0;
   var eventsController = Get.put(EventController());
 
+  String currentFilter = 'All';
+
+  Set<String> selectedEventType = {'Training'};
+  var allEventTypes = ['Track', 'Road', 'Coaching', 'Training'];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,61 +48,70 @@ class _EventsScreenState extends State<EventsScreen> {
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ListTile(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    title: const Text('Track'),
-                    onTap: () {
-                      Get.to(() => const NewTrackRideEventScreen());
-                      //Navigator.pop(context);
-                    },
 
-                  ),
-                  ListTile(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    title: const Text('Road'),
-                    onTap: () {
-                      Navigator.pop(context);
-                        Get.to(() => const NewRideEventScreen());
+                  if(Get.find<UserController>().selectedUserType.value == UserType.RIDER)
+                    ...[
+                      ListTile(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        title: const Text('Track'),
+                        onTap: () {
+                          Get.to(() => NewTrackRideEventScreen());
+                          //Navigator.pop(context);
+                        },
+
+                      ),
+                      ListTile(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        title: const Text('Road'),
+                        onTap: () {
+                          Navigator.pop(context);
+                          Get.to(() => const NewRideEventScreen());
+                          //Navigator.pop(context);
+                        },
+
+                      ),
+                    ],
+                  if(Get.find<UserController>().selectedUserType.value == UserType.PROMOTER)
+                  ...[
+                    ListTile(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      title: const Text('Track'),
+                      onTap: () {
+                        Get.to(() => const NewTrackRidePromoterEventScreen());
                         //Navigator.pop(context);
                       },
+                    ),
+                    ListTile(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      title: const Text('Road'),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Get.to(() => const NewRidePromoterEventScreen());
+                        //Navigator.pop(context);
+                      },
+                    ),
+                  ],
+                  if(Get.find<UserController>().selectedUserType.value == UserType.COACH)
+                    ...[
+                      ListTile(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        title: const Text('Track'),
+                        onTap: () {
+                          Get.to(() => const NewTrackRideCoachEventScreen());
+                          //Navigator.pop(context);
+                        },
+                      ),
+                      ListTile(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        title: const Text('Road'),
+                        onTap: () {
+                          Navigator.pop(context);
+                          Get.to(() => const NewRideCoachEventScreen());
+                          //Navigator.pop(context);
+                        },
+                      ),
+                    ]
 
-                  ),
-                  const Divider(),
-                  ListTile(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    title: const Text('Track - Promoter'),
-                    onTap: () {
-                      Get.to(() => const NewTrackRidePromoterEventScreen());
-                      //Navigator.pop(context);
-                    },
-                  ),
-                  ListTile(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    title: const Text('Road - Promoter'),
-                    onTap: () {
-                      Navigator.pop(context);
-                      Get.to(() => const NewRidePromoterEventScreen());
-                      //Navigator.pop(context);
-                    },
-                  ),
-                  const Divider(),
-                  ListTile(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    title: const Text('Track - Coach'),
-                    onTap: () {
-                      Get.to(() => const NewTrackRideCoachEventScreen());
-                      //Navigator.pop(context);
-                    },
-                  ),
-                  ListTile(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    title: const Text('Road - Coach'),
-                    onTap: () {
-                      Navigator.pop(context);
-                      Get.to(() => const NewRideCoachEventScreen());
-                      //Navigator.pop(context);
-                    },
-                  ),
 
                 ],
               ),
@@ -131,25 +149,156 @@ class _EventsScreenState extends State<EventsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Upcoming Events', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-              const SizedBox(height: 10,),
-              Obx(() {
 
-                return ListView.builder(
+              Row(
+                children: [
+                  const Text('Upcoming Events', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),),
+                  const Spacer(),
+
+                  GestureDetector(
+                    onTapDown: (details) {
+                      //show context menu at this location
+                      showMenu(
+                        context: context,
+                        position: RelativeRect.fromLTRB(details.globalPosition.dx, details.globalPosition.dy, 0, 0),
+                        items: [
+                          PopupMenuItem(
+                            child: TextButton.icon(
+                                icon: const Icon(LineIcons.calendarAlt, color: primaryColor, size: 18,),
+                                label: const Text('All', style: TextStyle(color: Colors.white),),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  setState(() {
+                                    currentFilter = 'All';
+                                  });
+                                }),
+                          ),
+                          PopupMenuItem(
+                            child: TextButton.icon(
+                                icon: const Icon(LineIcons.calendarAlt, color: primaryColor, size: 18,),
+                                label: const Text('Next 7 Days', style: TextStyle(color: Colors.white),),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  setState(() {
+                                    currentFilter = 'Next 7 Days';
+                                  });
+                                }),
+                          ),
+                          PopupMenuItem(
+                            child: TextButton.icon(
+                                icon: const Icon(LineIcons.calendarAlt, color: primaryColor, size: 18,),
+                                label: const Text('Next 30 Days', style: TextStyle(color: Colors.white),),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  setState(() {
+                                    currentFilter = 'Next 30 Days';
+                                  });
+                                }),
+                          ),
+                          //custom
+                          PopupMenuItem(
+                            child: TextButton.icon(
+                                icon: const Icon(LineIcons.calendarAlt, color: primaryColor, size: 18,),
+                                label: const Text('Custom', style: TextStyle(color: Colors.white),),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  showDateRangePicker(
+                                      context: context,
+                                      firstDate:  DateTime.now(),
+                                      lastDate: DateTime.now().add(const Duration(days: 365))).then((value) {
+
+                                      setState(() {
+                                        var start = DateFormat('yyyy-MM-dd').format(value!.start);
+                                        var end = DateFormat('yyyy-MM-dd').format(value.end);
+                                        currentFilter = '$start - $end';
+                                      });
+                                  });
+
+                                }),
+                          ),
+
+                        ],
+                      );
+                    },
+                    child: TextButton.icon(
+                        icon: const Icon(LineIcons.calendarAlt, color: primaryColor, size: 18,),
+                        label: Text(currentFilter, style: const TextStyle(color: Colors.white),),
+                        onPressed: () {
+                          //show context menu at this location
+
+
+                        }),
+                  )
+                ],
+              ),
+              const SizedBox(height: 10,),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(width: 20,),
+                    SegmentedButtonTheme(
+                      data: SegmentedButtonThemeData(
+                       style: ButtonStyle(
+                         shape: WidgetStateProperty.all(
+                           RoundedRectangleBorder(
+                             borderRadius: BorderRadius.circular(50),
+                             side: BorderSide(color: primaryColor, width: 1),
+                           ),
+                         ),
+                       ),
+                      ),
+                      child: SegmentedButton(
+                        showSelectedIcon: false,
+                        style: ButtonStyle(
+                          shape: WidgetStateProperty.all(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50),
+                              side: BorderSide(color: primaryColor, width: 1),
+                            ),
+                          ),
+                        ),
+                        segments: allEventTypes.map((e) {
+                          return ButtonSegment(value: e, label: Text(e), );
+                        }).toList(),
+                        multiSelectionEnabled: false,
+                        emptySelectionAllowed: false, selected: selectedEventType,
+                        onSelectionChanged: (value) {
+                          setState(() {
+                            selectedEventType = value;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10,),
+
+              Obx(() {
+                var userTypeEvents = getUserTypeEvents(eventsController.events);
+
+                return getEventsLength(eventsController.events) > 0 ?ListView.builder(
 
                   shrinkWrap: true,
-                  itemCount: eventsController.events.length,
+                  itemCount: userTypeEvents.length,
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 5),
                       child: EventTile(
+                        event: userTypeEvents[index],
                         onPressed: () {
-                          Get.to(() => EventSummaryScreen(event: eventsController.events[index],));
+                          Get.to(() => EventSummaryScreen(event: userTypeEvents[index],));
                         },
                       ),
                     );
                   },
-                );
+                ) : Container(
+                    height: Get.height * 0.5,
+                    child: const Center(child: Text('No events found'),));
               }),
 
             ],
@@ -170,6 +319,38 @@ class _EventsScreenState extends State<EventsScreen> {
         ),
       ),
     );
+  }
+
+  getUserTypeEvents(List<Map<String, dynamic>> events) {
+    var userType = Get.find<UserController>().selectedUserType.value;
+    switch(userType) {
+      case UserType.RIDER:
+        return events.where((element) => element['eventType'].toString().contains('Rider')).toList();
+      case UserType.PROMOTER:
+        return events.where((element) => element['eventType'].toString().contains('Promoter')).toList();
+      case UserType.COACH:
+        return events.where((element) => element['eventType'].toString().contains('Coach')).toList();
+      case UserType.CLUB:
+        return events.where((element) => element['eventType'].toString().contains('Club')).toList();
+      default:
+        return events.where((element) => element['eventType'].toString().contains('Rider')).toList();
+    }
+  }
+}
+
+getEventsLength(List<Map<String, dynamic>> events) {
+  var userType = Get.find<UserController>().selectedUserType.value;
+  switch(userType) {
+    case UserType.RIDER:
+      return events.where((element) => element['eventType'].toString().contains('Rider')).length;
+    case UserType.PROMOTER:
+      return events.where((element) => element['eventType'].toString().contains('Promoter')).length;
+    case UserType.COACH:
+      return events.where((element) => element['eventType'].toString().contains('Coach')).length;
+    case UserType.CLUB:
+      return events.where((element) => element['eventType'].toString().contains('Club')).length;
+    default:
+      return events.where((element) => element['eventType'].toString().contains('Rider')).length;
   }
 }
 

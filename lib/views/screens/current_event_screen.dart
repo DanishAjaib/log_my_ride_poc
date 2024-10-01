@@ -102,7 +102,7 @@ class _CurrentEventScreenState extends State<CurrentEventScreen> {
 
 
 
-  var openTrack = true;
+  var openTrack = false;
   var floatingButtonVisible = false;
   late ScrollController _scrollController;
 
@@ -318,20 +318,20 @@ class _CurrentEventScreenState extends State<CurrentEventScreen> {
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      Get.to(() => const CompleteEventScreen());
+                      Get.to(() => CompleteEventScreen(currentEvent: widget.currentEvent ,));
                     },
                     child: const Text('End Event', style: TextStyle(color: Colors.red),),
                   )
                 ],
               );
             });
-          }, child: const Text('End Event'),
+          },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.lightGreen[900],
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(0),
             ),
-          ),
+          ), child: const Text('End Event'),
         ),
       ),
       body: Padding(
@@ -461,7 +461,7 @@ class _CurrentEventScreenState extends State<CurrentEventScreen> {
                 Tab(text: 'Session 6',),
               ]),*/
 
-              if(!openTrack)
+              if(widget.currentEvent['eventType'].toString().contains('Track'))
                 ...[
                   Padding(
                       padding: const EdgeInsets.all(10),
@@ -702,20 +702,14 @@ class _CurrentEventScreenState extends State<CurrentEventScreen> {
               ],
               const Divider(),
 
-              if(openTrack)
+              if(widget.currentEvent['eventType'].toString().contains('Road'))
                 ...[
                   const Padding(
                       padding: EdgeInsets.all(10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-
                         children: [
                           Text('Journey', style: TextStyle(fontSize: 14),),
-                          /*SizedBox(width: 10,),
-                    getChipText('00:30:45'),
-                    Spacer(),*/
-                          /*const SizedBox(width: 10,),
-                      getChipText('Active', bgColor: Colors.green, textSize: 11),*/
                         ],
                       )
 

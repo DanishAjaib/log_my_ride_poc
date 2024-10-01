@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:log_my_ride/utils/constants.dart';
 import 'package:log_my_ride/views/widgets/app_container.dart';
 import 'package:log_my_ride/views/widgets/ride_tile.dart';
 import 'package:sensors_plus/sensors_plus.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../../controllers/user_controller.dart';
 import '../../models/sensor_data.dart';
@@ -41,6 +43,42 @@ class _TrackMyBikeScreenState extends State<TrackMyBikeScreen> with SingleTicker
   var userController  = Get.find<UserController>();
 
   late String selectedDateRange;
+
+  String selectedChartType = 'Rides Logged';
+  var allChartTypes = ['Rides Logged', 'Hours Logged', ];
+
+  var ridesLoggedData = [
+    {'month': 'Jan', 'value': 5},
+    {'month': 'Feb', 'value': 24},
+    {'month': 'Mar', 'value': 35},
+    {'month': 'Apr', 'value': 14},
+    {'month': 'May', 'value': 35},
+    {'month': 'Jun', 'value': 45},
+    {'month': 'Jul', 'value': 65},
+    {'month': 'Aug', 'value': 55},
+    {'month': 'Sep', 'value': 45},
+    {'month': 'Oct', 'value': 50},
+    {'month': 'Nov', 'value': 55},
+    {'month': 'Dec', 'value': 60},
+
+  ];
+
+  var hoursLoggedData = [
+    {'month': 'Jan', 'value': 5},
+    {'month': 'Feb', 'value': 10},
+    {'month': 'Mar', 'value': 12},
+    {'month': 'Apr', 'value': 10},
+    {'month': 'May', 'value': 11},
+    {'month': 'Jun', 'value': 29},
+    {'month': 'Jul', 'value': 11},
+    {'month': 'Aug', 'value': 22},
+    {'month': 'Sep', 'value': 35},
+    {'month': 'Oct', 'value': 22},
+    {'month': 'Nov', 'value': 55},
+    {'month': 'Dec', 'value': 60},
+
+  ];
+
 
 
   @override
@@ -116,7 +154,7 @@ class _TrackMyBikeScreenState extends State<TrackMyBikeScreen> with SingleTicker
     });
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
+      /*floatingActionButton: FloatingActionButton(
         backgroundColor: primaryColor,
         onPressed: () {
           showDialog(context: context, builder: (context) {
@@ -143,7 +181,7 @@ class _TrackMyBikeScreenState extends State<TrackMyBikeScreen> with SingleTicker
 
         },
         child: const Icon(Icons.add),
-      ),
+      ),*/
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Container(
@@ -153,6 +191,51 @@ class _TrackMyBikeScreenState extends State<TrackMyBikeScreen> with SingleTicker
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Row(
+                children: [
+                  Text('Overview Dashboard'),
+                  const Spacer(),
+                  GestureDetector(
+                    onTapDown: (details) {
+                      showMenu(
+                          context: context,
+                          position: RelativeRect.fromLTRB(details.globalPosition.dx, details.globalPosition.dy, 0, 0),
+                          items: allChartTypes.map((e) => PopupMenuItem(child: Text(e), value: e,)).toList()
+                      ).then((value) {
+                        if(value != null) {
+                          setState(() {
+                            selectedChartType = value.toString();
+                          });
+                        }
+                      });
+                    },
+                    child: TextButton.icon(onPressed: (){
+
+                    }, label: Text(selectedChartType), icon: const Icon(LineIcons.filter, size: 25,)),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10,),
+              //chart
+              AppContainer(
+                child: SfCartesianChart(
+
+                  primaryXAxis: CategoryAxis(
+                    labelAlignment: LabelAlignment.center,
+                  ),
+                  series: <ChartSeries>[
+                    ColumnSeries<Map<String, dynamic>, String>(
+
+                      color: primaryColor,
+                      dataLabelSettings: DataLabelSettings(isVisible: true),
+
+                      dataSource: selectedChartType == 'Rides Logged' ? ridesLoggedData : hoursLoggedData,
+                      xValueMapper: (datum, index) => datum['month'],
+                      yValueMapper: (datum, index) => datum['value'],
+                    )
+                  ],
+                ),
+              ),
               //map container
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -248,7 +331,7 @@ class _TrackMyBikeScreenState extends State<TrackMyBikeScreen> with SingleTicker
               ),
               const SizedBox(height: 10,),
               //padded title
-              Padding(padding: const EdgeInsets.symmetric(horizontal: 10), child: Text('${_selected.contains('Road') ? 'Road ' : 'Track '} Rides', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
+              Padding(padding: const EdgeInsets.symmetric(horizontal: 10), child: Text('${_selected.contains('Road') ? 'Road ' : 'Track '} Rides',)),
               //rides
               AppContainer(
                 padding: 10,

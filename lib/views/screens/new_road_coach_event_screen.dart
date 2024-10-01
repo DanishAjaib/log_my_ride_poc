@@ -15,6 +15,7 @@ import 'package:log_my_ride/views/widgets/new_group_dialog.dart';
 import 'package:log_my_ride/views/widgets/notifications_widget.dart';
 import 'package:log_my_ride/views/widgets/number_selector_dialog.dart';
 import 'package:log_my_ride/views/widgets/officials_widget.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../utils/constants.dart';
 import '../widgets/rider_skill_selector.dart';
@@ -113,7 +114,7 @@ class _NewRideCoachEventScreenState extends State<NewRideCoachEventScreen> {
 
               onPressed: () {
                 setState(() {
-                  if(currentIndex < 2) {
+                  if(currentIndex < 3) {
                     currentIndex++;
                   } else {
                     showDialog(context: context, builder: (context) {
@@ -231,6 +232,41 @@ class _NewRideCoachEventScreenState extends State<NewRideCoachEventScreen> {
         ],
       ),
       appBar: AppBar(
+        bottom: PreferredSize(
+
+            preferredSize: const Size.fromHeight(50),
+            child:  Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    child:Row(
+                      children: [
+                        AnimatedIndexedStack(index: currentIndex , children: const [
+                          Text('RIDE SUMMARY', style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),),
+                          Text('JOURNEY DETAILS', style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),),
+                          Text('EVENT NOTIFICATIONS', style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),),
+                          Text('EVENT MARKETING', style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),),
+                        ]),
+                        const Spacer(),
+                        AnimatedSmoothIndicator(
+                          activeIndex: currentIndex,
+                          count: 4,
+                          effect: const WormEffect(
+                            dotColor: Colors.grey,
+                            activeDotColor: primaryColor,
+                            dotHeight: 10,
+                            dotWidth: 10,
+                          ),
+                        )
+                      ],
+                    )
+                )
+                ,
+                const SizedBox(height: 10,),
+              ],
+            )
+        ),
         title: const Text('Create a new ride'),
       ),
       body: Padding(
@@ -239,22 +275,7 @@ class _NewRideCoachEventScreenState extends State<NewRideCoachEventScreen> {
           physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  child: Row(
-                    children: [
-                      Text('RIDE SUMMARY', style: TextStyle(color: currentIndex == 0 ? primaryColor : Colors.grey, fontWeight: currentIndex == 0 ? FontWeight.bold : FontWeight.normal),),
-                      const SizedBox(width: 20,),
-                      Text('JOURNEY DETAILS', style: TextStyle(color: currentIndex == 1 ? primaryColor : Colors.grey, fontWeight: currentIndex == 1 ? FontWeight.bold : FontWeight.normal),),
-                      const SizedBox(width: 20,),
-                      Text('RIDE SETTINGS', style: TextStyle(color: currentIndex == 2 ? primaryColor : Colors.grey, fontWeight: currentIndex == 2 ? FontWeight.bold : FontWeight.normal),),
-                      const SizedBox(width: 20,),
-                    ],
-                  ),
-                ),
-              ),
+
               const SizedBox(height: 20,),
               AnimatedIndexedStack(
                   index: currentIndex,
@@ -909,6 +930,185 @@ class _NewRideCoachEventScreenState extends State<NewRideCoachEventScreen> {
                       ),
                     ),
                     //ride settings
+                    const SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          NotificationsWidget(),
+                          /*AppContainer(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+
+
+                                const SizedBox(height: 10,),
+
+                                SwitchListTile(
+                                  activeColor: Colors.white,
+                                  inactiveThumbColor: primaryColor,
+
+                                  inactiveTrackColor: Colors.black,
+                                  activeTrackColor: primaryColor,
+
+                                  subtitle: const Text('Enable/Disable Push Notifications for places of interest', style: TextStyle(color: Colors.grey),),
+                                  value: placesofInterest,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      placesofInterest = value;
+                                    });
+                                  }, title: const Text('Places of Interest'),
+                                ),
+                                SwitchListTile(
+                                  activeColor: Colors.white,
+                                  inactiveThumbColor: primaryColor,
+
+                                  inactiveTrackColor: Colors.black,
+                                  activeTrackColor: primaryColor,
+
+                                  subtitle: const Text('Allow organizers to send push notifications to registered users', style: TextStyle(color: Colors.grey),),
+                                  value: registeredUsers,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      registeredUsers = value;
+                                    });
+                                  }, title: const Text('Registered Users'),
+                                ),
+                                SwitchListTile(
+                                  activeColor: Colors.white,
+                                  inactiveThumbColor: primaryColor,
+
+                                  inactiveTrackColor: Colors.black,
+                                  activeTrackColor: primaryColor,
+
+                                  subtitle: const Text('Allow push notifications when a crash is detected', style: TextStyle(color: Colors.grey),),
+                                  value: crashAlerts,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      crashAlerts = value;
+                                    });
+                                  }, title: const Text('Crash Alerts'),
+                                ),
+                                SwitchListTile(
+                                  activeColor: Colors.white,
+                                  inactiveThumbColor: primaryColor,
+
+                                  inactiveTrackColor: Colors.black,
+                                  activeTrackColor: primaryColor,
+
+                                  subtitle: const Text('Allow Push notifications if a rider distance is greater than X km from the organiser', style: TextStyle(color: Colors.grey),),
+                                  value: riderDistance,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      riderDistance = value;
+                                    });
+                                  }, title: const Text('Rider Distance'),
+                                ),
+
+
+                                //Allow Push notifications if a rider distance is greater than X km from the organiser
+
+
+
+                              ],
+                            ),
+                          ),
+                          AppContainer(
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:  CrossAxisAlignment.start,
+                                    children: [
+                                      const Text('Riders Allowed'),
+                                      const SizedBox(height: 10,),
+                                      SizedBox(
+                                        height: 40,
+                                        child: ToggleButtons(
+                                          borderRadius: BorderRadius.circular(50),
+                                          selectedBorderColor: primaryColor,
+                                          isSelected: [
+                                            _selectedRiderAllowedType.contains('Everyone'),
+                                            _selectedRiderAllowedType.contains('Friends Only'),
+                                            _selectedRiderAllowedType.contains('Manually Approved'),
+                                          ],
+                                          onPressed: (value) {
+                                            setState(() {
+                                              _selectedRiderAllowedType =  {allRiderAllowedTypes.elementAt(value)};
+                                            });
+                                          },
+                                          children: allRiderAllowedTypes.map((e) {
+                                            return Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 15),
+                                              child: SizedBox(
+                                                height: 30,
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(e.toString(), style: const TextStyle(fontSize: 12,),),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          }).toList(),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+
+
+
+                                ],
+                              ),
+                            ),
+                          ),
+                          AppContainer(
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 10,),
+                                  Row(
+                                    children: [
+                                      const Text('Required Skill Level'),
+                                      const Spacer(),
+                                      Text(requiredSkill.toString(), style: TextStyle(color: requiredSkill < 35 ? Colors.green :(requiredSkill < 75 ? Colors.yellow : Colors.red), fontSize: 22),)
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10,),
+                                  SliderTheme(
+                                    data: SliderThemeData(
+                                      thumbShape: CustomSliderThumbShape(strokeWidth: 2, strokeColor: requiredSkill < 35 ? Colors.green :(requiredSkill < 75 ? Colors.yellow : Colors.red), fillColor: Colors.black),
+                                      thumbColor: primaryColor,
+                                      activeTrackColor: requiredSkill < 35 ? Colors.green :(requiredSkill < 75 ? Colors.yellow : Colors.red),
+                                      inactiveTrackColor: Colors.grey,
+                                      showValueIndicator: ShowValueIndicator.always,
+                                      valueIndicatorColor: primaryColor,
+                                    ),
+                                    child: Slider(
+                                      min: 1,
+                                      max: 100,
+                                      value: requiredSkill.toDouble(),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          requiredSkill = value.toInt();
+                                        });
+                                      },
+                                      activeColor: primaryColor,
+                                      inactiveColor: Colors.grey,
+
+                                    ),
+                                  ),
+                                  ]
+                              ),
+                            ),
+                          )*/
+                        ],
+                      ),
+                    ),
                     const SingleChildScrollView(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,

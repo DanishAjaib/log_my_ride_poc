@@ -48,6 +48,11 @@ class _RoadModeScreenState extends State<RoadModeScreen> {
 
     var userController = Get.find<UserController>();
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Road Mode'),
+        centerTitle: true,
+
+      ),
       body: Container(
         padding: const EdgeInsets.all(defaultPadding),
         child: SingleChildScrollView(

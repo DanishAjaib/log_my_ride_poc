@@ -78,7 +78,7 @@ class _RandomSplineChartState extends State<RandomSplineChart> {
                 children: [
                   SizedBox(
 
-                    width: MediaQuery.of(context).size.width - 30,
+                    width: MediaQuery.of(context).size.width - 60,
                     child: Column(
                       children: [
                        Obx(() {
@@ -87,7 +87,6 @@ class _RandomSplineChartState extends State<RandomSplineChart> {
                          return  Row(
                            mainAxisAlignment: MainAxisAlignment.start,
                            children: [
-
                              ...[
                                Column(
                                  crossAxisAlignment: CrossAxisAlignment.start,
@@ -151,7 +150,7 @@ class _RandomSplineChartState extends State<RandomSplineChart> {
                                  ),
 
                              ],
-                             const Spacer(),
+                              const Spacer(),
                              //play button
                              AnimatedContainer(
                                 duration: const Duration(milliseconds: 200),

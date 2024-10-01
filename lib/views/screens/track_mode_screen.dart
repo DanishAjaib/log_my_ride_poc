@@ -61,6 +61,10 @@ class _TrackModeScreenState extends State<TrackModeScreen> {
 
     String selectedDateRange = DateFormat('yyyy-MM-dd').format(DateTime.now());
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Track Mode'),
+
+      ),
       body: Container(
         padding: const EdgeInsets.all(10),
         child: SingleChildScrollView(

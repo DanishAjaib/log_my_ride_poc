@@ -95,7 +95,7 @@ class _NewRideEventScreenState extends State<NewRideEventScreen> {
                   borderRadius: BorderRadius.circular(0),
                 ),
               ),
-              child: const Text('Back'),
+              child: const Text('Back', style: TextStyle(color: Colors.white)),
             ),
           ),
           SizedBox(
@@ -212,7 +212,7 @@ class _NewRideEventScreenState extends State<NewRideEventScreen> {
                   borderRadius: BorderRadius.circular(0),
                 ),
               ),
-              child: const Text('Next'),
+              child: const Text('Next', style: TextStyle(color: Colors.white),),
             ),
           )
         ],

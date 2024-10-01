@@ -277,7 +277,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> with SingleTickerProv
 
   @override
   void initState() {
-    tabController = TabController(length: 9, vsync: this);
+    tabController = TabController(length: 10, vsync: this);
     super.initState();
   }
   @override
@@ -445,7 +445,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> with SingleTickerProv
                     child: Column(
                       children: [
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Row(
                             children: [
                               const Text('MY VEHICLES', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
@@ -974,6 +974,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> with SingleTickerProv
                                 return Padding(
                                   padding: const EdgeInsets.only(bottom: 5),
                                   child: EventTile(
+                                    event: eventsController.events[index],
                                     onPressed: () {
                                       Get.to(() => EventSummaryScreen(event: eventsController.events[index],));
                                     },
@@ -1072,6 +1073,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> with SingleTickerProv
                                 return Padding(
                                   padding: const EdgeInsets.only(bottom: 5),
                                   child: EventTile(
+                                    event: eventsController.events[index],
                                     onPressed: () {
                                       Get.to(() => EventSummaryScreen(event: eventsController.events[index],));
                                     },
@@ -1086,8 +1088,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> with SingleTickerProv
                   ),
                 ),
                 //challenges
-                MyChallengesScreen(),
-                //notificationss
+                const MyChallengesScreen(),
+                //notifications
                 SingleChildScrollView(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -1135,6 +1137,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> with SingleTickerProv
                     ),
                   ),
                 ),
+                Container()
+
 
 
               ],

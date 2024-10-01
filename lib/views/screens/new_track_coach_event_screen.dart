@@ -286,7 +286,6 @@ class _NewTrackRideCoachEventScreen extends State<NewTrackRideCoachEventScreen> 
                       Text('RIDE SUMMARY', style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),),
                       Text('JOURNEY DETAILS', style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),),
                       Text('EVENT CONFIGURATION', style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),),
-                      Text('EVENT NOTIFICATIONS', style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),),
                       Text('EVENT MARKETING', style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),),
                     ]),
                     const Spacer(),
@@ -989,6 +988,13 @@ class _NewTrackRideCoachEventScreen extends State<NewTrackRideCoachEventScreen> 
                     ),
 
                     //event notifications
+                    const SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          NotificationsWidget()
+                        ],
+                      ),
+                    ),
                     const SingleChildScrollView(
                       child: Column(
                         children: [

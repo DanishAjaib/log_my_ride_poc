@@ -16,67 +16,85 @@ class TuningModeScreen extends StatefulWidget {
   State<TuningModeScreen> createState() => _TuningModeScreenState();
 }
 
-class _TuningModeScreenState extends State<TuningModeScreen> {
+class _TuningModeScreenState extends State<TuningModeScreen> with SingleTickerProviderStateMixin {
+  late TabController tabController;
+
 
   var userController = Get.find<UserController>();
+
+  @override
+  void initState() {
+    tabController = TabController(length: 2, vsync: this);
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
     
       body: Container(
         padding: const EdgeInsets.all(10),
         child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text('${faker.lorem.sentence()} ${faker.lorem.sentence()} ${faker.lorem.sentence()}'),
-              const SizedBox(height: 10),
-              const Divider(),
-              const SizedBox(height: 10),
-              const Text('Select a Session'),
-              const SizedBox(height: 5),
-              DropdownButtonFormField(
-                decoration:  InputDecoration( contentPadding: const EdgeInsets.symmetric(horizontal: 10), border: OutlineInputBorder( borderRadius: BorderRadius.circular(10), ), ),
-                  items: const [
-                DropdownMenuItem(value: 'Session 1', child: Text('Session 1')),
-                DropdownMenuItem(value: 'Session 2', child: Text('Session 2')),
-                DropdownMenuItem(value: 'Session 3', child: Text('Session 3')),
-              ], onChanged: (value) {}),
-              const SizedBox(height: 20),
-              const Text('Select a tuner'),
-              const SizedBox(height: 5),
-              DropdownButtonFormField(
-                  decoration:  InputDecoration( contentPadding: const EdgeInsets.symmetric(horizontal: 10), border: OutlineInputBorder( borderRadius: BorderRadius.circular(10), ), ),
-                  items: const [
-                    DropdownMenuItem(value: 'Tuner 1', child: Text('Tuner 1')),
-                    DropdownMenuItem(value: 'Tuner 2', child: Text('Tuner 2')),
-                    DropdownMenuItem(value: 'Tuner 3', child: Text('Tuner 3')),
-                  ], onChanged: (value) {}),
-              const SizedBox(height: 20),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(primaryColor),
-                        shape: WidgetStateProperty.all(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+          child: Container(
+            height: Get.height,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                TabBar(
+                  splashBorderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                  indicatorColor: primaryColor,
+                  labelColor: primaryColor,
+                
+                  controller: tabController,
+                  tabs: const [
+                    Tab(
+                      text: 'Overview',
+                    ),
+                    Tab(
+                      text: 'Find a Tuner',
+                    ),
+                  ],
+                ),
+            
+              const SizedBox(height: 10,),
+                Expanded(
+                  child: TabBarView(
+
+                              
+                    controller: tabController,
+                              
+                    children: [
+                      SingleChildScrollView(
+                        physics: BouncingScrollPhysics(),
+                        child: Column(
+                          children: [
+                            //current tuner subscriptions
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('Current Tuner Subscriptions', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),),
+                                //filter
+                                TextButton.icon(
+                                  onPressed: () {},
+                                  label: const Text('Filter'),
+                                  icon: const Icon(Icons.filter_list),
+                                )
+
+                              ],
+                            )
+
+                          ],
                         ),
                       ),
-                      onPressed: () {},
-                      child: const Text('Send'),
-                    ),
+                      Container(),
+                    ],
                   ),
-                ],
-              )
-
-            ],
+                )
+            
+              ],
+            ),
           ),
         ),
       ),

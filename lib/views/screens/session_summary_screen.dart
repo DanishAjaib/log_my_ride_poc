@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart' as geo;
 import 'package:google_fonts/google_fonts.dart';
-
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
@@ -17,10 +16,8 @@ import 'package:log_my_ride/controllers/navigation_controller.dart';
 import 'package:log_my_ride/controllers/replay_timer_controller.dart';
 import 'package:log_my_ride/utils/constants.dart';
 import 'package:log_my_ride/views/widgets/app_container.dart';
-import 'package:log_my_ride/views/widgets/dummy_map_container.dart';
 import 'package:multiavatar/multiavatar.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import '../../utils/road_painter.dart';
 import '../../utils/utils.dart';
 import '../widgets/app_social.dart';
 import '../widgets/random_spline_chart.dart';
