@@ -48,7 +48,7 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.event['eventType'].toString(),
+                    widget.event['eventType'].toString().contains('Road')  ? 'Open Road Event' : 'Closed Track Event',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
