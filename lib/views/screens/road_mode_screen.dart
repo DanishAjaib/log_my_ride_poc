@@ -48,11 +48,47 @@ class _RoadModeScreenState extends State<RoadModeScreen> {
 
     var userController = Get.find<UserController>();
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        shape:  const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(50)),
+        ),
+        backgroundColor: primaryColor,
+        onPressed: () {
+          showDialog(context: context, builder: (context) {
+            return AlertDialog(
+              title: const Text('Select Vehicle'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: userController.vehicles.map((vehicle) => ListTile(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  title: Text(vehicle.vehicle_name),
+                  onTap: () {
+                    setState(() {
+                      widget.selectedVehicle = vehicle;
+                      widget.sessionStarted = true;
+                      Navigator.pop(context);
+                      Get.to(() => const CurrentRoadRideScreen());
+                    });
+
+                  },
+                )).toList(),
+              ),
+            );
+          });
+        }, child: const Icon(LineIcons.play),) ,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       appBar: AppBar(
         title: const Text('Road Mode'),
         centerTitle: true,
 
       ),
+
+      /* widget.selectedVehicle = vehicle;
+                widget.sessionStarted = true;
+                Navigator.pop(context);
+                Get.to(() => const CurrentRoadRideScreen());*/
       body: Container(
         padding: const EdgeInsets.all(defaultPadding),
         child: SingleChildScrollView(
@@ -60,9 +96,8 @@ class _RoadModeScreenState extends State<RoadModeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 10,),
               //start session full width elevated button
-              ElevatedButton(
+             /* ElevatedButton(
                 style: ButtonStyle(
                   minimumSize: WidgetStateProperty.all(const Size(double.infinity, 100)),
 
@@ -100,7 +135,7 @@ class _RoadModeScreenState extends State<RoadModeScreen> {
                   });
                 },
                 child: Text('START NEW RIDE', style:GoogleFonts.orbitron(fontSize: 12, fontWeight: FontWeight.bold, color: primaryColor),),
-              ),
+              ),*/
               const SizedBox(height: 15,),
              Row(
                children: [

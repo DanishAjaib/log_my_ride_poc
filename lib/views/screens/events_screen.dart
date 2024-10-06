@@ -39,6 +39,9 @@ class _EventsScreenState extends State<EventsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
+        shape:  const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(50)),
+        ),
         backgroundColor: primaryColor,
         onPressed: () {
           // select the type of event to create {Track, Road}
@@ -55,7 +58,7 @@ class _EventsScreenState extends State<EventsScreen> {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                         title: const Text('Track'),
                         onTap: () {
-                          Get.to(() => NewTrackRideEventScreen());
+                          Get.to(() => const NewTrackRideEventScreen());
                           //Navigator.pop(context);
                         },
 

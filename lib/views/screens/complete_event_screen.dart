@@ -22,6 +22,7 @@ import '../../controllers/replay_timer_controller.dart';
 import '../../controllers/user_controller.dart';
 import '../widgets/app_container.dart';
 import '../widgets/random_spline_chart.dart';
+import 'event_participants_screen.dart';
 
 class CompleteEventScreen extends StatefulWidget {
 
@@ -171,6 +172,29 @@ class _CompleteEventScreenState extends State<CompleteEventScreen> with SingleTi
     RiderCountDatum('Oct', 63, 66, 70, 55, 15),
     RiderCountDatum('Nov', 75, 85, 75, 60, 15),
     RiderCountDatum('Dec', 120, 111, 80, 65, 15),
+  ];
+
+  var participants = [
+    {
+      'name': faker.person.name(),
+      'activities': 5,
+    },
+    {
+      'name': faker.person.name(),
+      'activities': 4,
+    },
+    {
+      'name': faker.person.name(),
+      'activities': 3,
+    },
+    {
+      'name': faker.person.name(),
+      'activities': 6,
+    },
+    {
+      'name': faker.person.name(),
+      'activities': 5,
+    },
   ];
 
   var eventParticipants = [
@@ -392,8 +416,10 @@ class _CompleteEventScreenState extends State<CompleteEventScreen> with SingleTi
                 const Tab(text: 'Historical Analysis'),
                 if(userController.selectedUserType.value == UserType.COACH)
                   const Tab(text: 'Event Participants'),
-                if(userController.selectedUserType.value == UserType.COACH)
-                  const Tab(text: 'Analyse My Ride'),
+                if(userController.selectedUserType.value == UserType.CLUB)
+                  const Tab(text: 'Event Members'),
+                /*if(userController.selectedUserType.value == UserType.COACH)
+                  const Tab(text: 'Analyse My Ride'),*/
               ],
             ),
             const SizedBox(height: 10),
@@ -506,9 +532,6 @@ class _CompleteEventScreenState extends State<CompleteEventScreen> with SingleTi
                       ],
                     ),
                   ),
-                  // Schedule
-
-
                   // Challenges
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -552,7 +575,9 @@ class _CompleteEventScreenState extends State<CompleteEventScreen> with SingleTi
                           child: Column(
                             children:   alLChallenges
                                 .map((challenge) => ListTile(
-
+                              onTap: () {
+                                Get.to(() => const EventParticipantsScreen());
+                              },
                               leading: CircleAvatar(
                                 backgroundColor: primaryColor,
                                 child: SvgPicture.memory(getRandomSvgCode()),
@@ -581,7 +606,7 @@ class _CompleteEventScreenState extends State<CompleteEventScreen> with SingleTi
                       ],
                     ),
                   ),
-                  // Event Performance
+
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: SingleChildScrollView(
@@ -1006,7 +1031,7 @@ class _CompleteEventScreenState extends State<CompleteEventScreen> with SingleTi
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
                           children: [
-                            if(userController.selectedUserType.value == UserType.CLUB)
+                            if(userController.selectedUserType.value == UserType.COACH)
                               SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
                                 physics: const BouncingScrollPhysics(),
@@ -1024,6 +1049,221 @@ class _CompleteEventScreenState extends State<CompleteEventScreen> with SingleTi
                               children: eventParticipants.map((e) {
                                 return AppContainer(
                                   child: ListTile(
+
+                                    onTap: () {
+                                      showModalBottomSheet(
+                                        isScrollControlled: true,
+                                          context: context, builder: (context) {
+                                        return SizedBox(
+                                          width: double.infinity,
+                                          height: 800,
+                                          child: SingleChildScrollView(
+                                            physics: const BouncingScrollPhysics(),
+                                            child: Column(
+                                              children: [
+                                                Stack(
+                                                  children: [
+                                                    AppContainer(
+                                                      height: 0,
+                                                      child: ClipRRect(
+                                                        clipBehavior: Clip.antiAlias,
+                                                        borderRadius: BorderRadius.circular(10),
+                                                        child:
+                                                        Obx(() {
+                                                          var controller = locationController.controller.value;
+                                                          var isPlaying = replayController.isPlaying.value;
+                                                          return OSMFlutter(
+                                                            onMapIsReady: (value) async {
+                                                              var geoPoints = await locationController.drawRoad(startPoint: GeoPoint(
+                                                                  latitude: locationController.currentPosition.value.latitude,
+                                                                  longitude: locationController.currentPosition.value.longitude), endPoint: GeoPoint(
+                                                                  latitude: locationController.currentPosition.value.latitude + 0.03,
+                                                                  longitude: locationController.currentPosition.value.longitude + 0.01
+                                                              ));
+
+                                                              controller.addMarker(
+                                                                  GeoPoint(
+                                                                      latitude: locationController.currentPosition.value.latitude,
+                                                                      longitude: locationController.currentPosition.value.longitude),
+                                                                  markerIcon: MarkerIcon(
+                                                                    iconWidget: CircleAvatar(
+                                                                      backgroundColor: primaryColor,
+                                                                      radius: 20,
+                                                                      child: SvgPicture.memory(getRandomSvgCode()),
+                                                                    ),
+                                                                  ));
+
+                                                            },
+                                                            controller: controller,
+                                                            mapIsLoading: const Center(child: CircularProgressIndicator(color: primaryColor, strokeWidth: 2,)),
+                                                            osmOption:  OSMOption(
+
+                                                              enableRotationByGesture: true,
+                                                              showZoomController: true,
+                                                              userLocationMarker: UserLocationMaker(
+                                                                personMarker: const MarkerIcon(
+                                                                  icon: Icon(
+                                                                      LineIcons.biking,
+                                                                      color: primaryColor, size: 30
+                                                                  ),
+                                                                ),
+                                                                directionArrowMarker: const MarkerIcon(
+                                                                  icon: Icon(
+                                                                      LineIcons.arrowCircleUp,
+                                                                      color: primaryColor, size: 30
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              roadConfiguration: RoadOption(roadColor: Colors.grey[800]!, roadWidth: 5),
+
+                                                            ),
+                                                          );
+                                                        }),
+                                                      ),),
+
+
+                                                  ],
+                                                ),
+                                                const SizedBox(height: 10,),
+                                                //plot title
+
+                                                Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      const Text('AnalyseMyRide', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                                                      SizedBox(
+                                                        height: 35,
+                                                        child: ToggleButtons(
+                                                          borderRadius: BorderRadius.circular(50),
+                                                          selectedBorderColor: primaryColor,
+
+                                                          isSelected: [
+                                                            selectedMetrics.contains('Speed'),
+                                                            selectedMetrics.contains('RPM'),
+                                                            selectedMetrics.contains('Lean Angle'),
+
+                                                          ],
+                                                          onPressed: (value) {
+                                                            setState(() {
+                                                              if (value == 0) {
+                                                                if (selectedMetrics.contains('Speed')) {
+                                                                  if(selectedMetrics.length == 1) {
+                                                                    return;
+                                                                  }
+                                                                  selectedMetrics.remove('Speed');
+                                                                  splineData.removeWhere((element) => element.name == 'Speed');
+
+                                                                  if(selectedMetrics.isEmpty) {
+                                                                    selectedMetrics.add('Speed');
+                                                                    splineData.add(SplineSeries<SpeedData, String>(
+                                                                      dataSource: generateSpeedData(10),
+                                                                      xValueMapper: (SpeedData sales, _) => sales.time,
+                                                                      yValueMapper: (SpeedData sales, _) => sales.speed,
+                                                                      name: 'Speed',
+                                                                      color: Colors.green,
+                                                                    ));
+                                                                  }
+                                                                } else {
+                                                                  selectedMetrics.add('Speed');
+                                                                  splineData.add(SplineSeries<SpeedData, String>(
+                                                                    dataSource: generateSpeedData(10),
+                                                                    xValueMapper: (SpeedData sales, _) => sales.time,
+                                                                    yValueMapper: (SpeedData sales, _) => sales.speed,
+                                                                    name: 'Speed',
+                                                                    color: Colors.green,
+                                                                  ));
+                                                                }
+                                                              } else if (value == 1) {
+                                                                if (selectedMetrics.contains('RPM')) {
+                                                                  selectedMetrics.remove('RPM');
+                                                                  splineData.removeWhere((element) => element.name == 'RPM');
+
+                                                                  if(selectedMetrics.isEmpty) {
+                                                                    selectedMetrics.add('Speed');
+                                                                    splineData.add(SplineSeries<SpeedData, String>(
+                                                                      dataSource: generateSpeedData(10),
+                                                                      xValueMapper: (SpeedData sales, _) => sales.time,
+                                                                      yValueMapper: (SpeedData sales, _) => sales.speed,
+                                                                      name: 'Speed',
+                                                                      color: Colors.green,
+                                                                    ));
+                                                                  }
+                                                                } else {
+                                                                  selectedMetrics.add('RPM');
+                                                                  splineData.add(SplineSeries<SpeedData, String>(
+                                                                    dataSource: generateRPMData(15),
+                                                                    xValueMapper: (SpeedData sales, _) => sales.time,
+                                                                    yValueMapper: (SpeedData sales, _) => sales.speed,
+                                                                    name: 'RPM',
+                                                                    color: Colors.blue,
+                                                                  ));
+                                                                }
+                                                              } else if (value == 2) {
+                                                                if (selectedMetrics.contains('Lean Angle')) {
+                                                                  selectedMetrics.remove('Lean Angle');
+                                                                  splineData.removeWhere((element) => element.name == 'Lean Angle');
+
+                                                                  if(selectedMetrics.isEmpty) {
+                                                                    selectedMetrics.add('Speed');
+                                                                    splineData.add(SplineSeries<SpeedData, String>(
+                                                                      dataSource: generateSpeedData(10),
+                                                                      xValueMapper: (SpeedData sales, _) => sales.time,
+                                                                      yValueMapper: (SpeedData sales, _) => sales.speed,
+                                                                      name: 'Speed',
+                                                                      color: Colors.green,
+                                                                    ));
+                                                                  }
+                                                                } else {
+                                                                  selectedMetrics.add('Lean Angle');
+                                                                  splineData.add(SplineSeries<SpeedData, String>(
+                                                                    dataSource: generateLeanAngleData(10),
+                                                                    xValueMapper: (SpeedData sales, _) => sales.time,
+                                                                    yValueMapper: (SpeedData sales, _) => sales.speed,
+                                                                    name: 'Lean Angle',
+                                                                    color: Colors.red,
+                                                                  ));
+                                                                }
+                                                              }
+                                                            });
+                                                          },
+                                                          children: allMetrics.map((e) {
+                                                            return Padding(
+                                                              padding: const EdgeInsets.symmetric(horizontal: 15),
+                                                              child: SizedBox(
+                                                                height: 30,
+                                                                child: Column(
+                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                  children: [
+
+                                                                    Text(e, style: const TextStyle(fontSize: 12,),),
+                                                                    /*
+                                                Text(allMetrics.indexOf(e) == 0 ? currentSpeed.toString() : allMetrics.indexOf(e) == 1 ? currentRPM.toString() : currentLeanAngle.toString(), style: TextStyle(fontSize: 12, color: metricColors[allMetrics.indexOf(e)], fontWeight: FontWeight.bold),),
+                                            */
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            );
+                                                          }).toList(),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+
+                                                const SizedBox(height: 10,),
+                                                RandomSplineChart(
+                                                  series: splineData,
+                                                  selectedMetrics: selectedMetrics,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      });
+
+                                    },
                                     leading: CircleAvatar(
                                       backgroundColor: primaryColor,
                                       child: e['Image'] as SvgPicture,
@@ -1034,20 +1274,20 @@ class _CompleteEventScreenState extends State<CompleteEventScreen> with SingleTi
                                       children: [
                                         Row(
                                           children: [
-                                            const Icon(Icons.star, color: primaryColor, size: 20,),
-                                            Text('Skill: ${e['Skill']}'),
+                                            const Icon(Icons.star, color: primaryColor, size: 15,),
+                                            Text('Skill: ${e['Skill']}', style: TextStyle(fontSize: 12),),
                                           ],
                                         ),
                                         Row(
                                           children: [
-                                            const Icon(Icons.star, color: primaryColor, size: 20,),
-                                            Text('Day Score: ${e['Day Score']}'),
+                                            const Icon(Icons.star, color: primaryColor, size: 15,),
+                                            Text('Day Score: ${e['Day Score']}', style: TextStyle(fontSize: 12)),
                                           ],
                                         ),
                                         Row(
                                           children: [
-                                            const Icon(Icons.star, color: primaryColor, size: 20,),
-                                            Text('Challenge Won: ${e['Challenge Won']}'),
+                                            const Icon(Icons.star, color: primaryColor, size: 15,),
+                                            Text('Challenge Won: ${e['Challenge Won']}', style: TextStyle(fontSize: 12)),
                                           ],
                                         ),
                                       ],
@@ -1060,7 +1300,7 @@ class _CompleteEventScreenState extends State<CompleteEventScreen> with SingleTi
                         ),
                       ),
                     ),
-                  if(userController.selectedUserType.value == UserType.COACH)
+                  /*if(userController.selectedUserType.value == UserType.COACH)
                     SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
                       child: Column(
@@ -1242,9 +1482,9 @@ class _CompleteEventScreenState extends State<CompleteEventScreen> with SingleTi
                                             children: [
 
                                               Text(e, style: const TextStyle(fontSize: 12,),),
-                                              /*
+                                              *//*
                                               Text(allMetrics.indexOf(e) == 0 ? currentSpeed.toString() : allMetrics.indexOf(e) == 1 ? currentRPM.toString() : currentLeanAngle.toString(), style: TextStyle(fontSize: 12, color: metricColors[allMetrics.indexOf(e)], fontWeight: FontWeight.bold),),
-                                          */
+                                          *//*
                                             ],
                                           ),
                                         ),
@@ -1263,7 +1503,7 @@ class _CompleteEventScreenState extends State<CompleteEventScreen> with SingleTi
                           ),
                         ],
                       ),
-                    )
+                    )*/
 
                 ],
               ),

@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:log_my_ride/firebase_options.dart';
 import 'package:log_my_ride/utils/constants.dart';
@@ -13,6 +14,10 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform
   );
 
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
+
   runApp(const MyApp());
 }
 
@@ -24,6 +29,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return GetMaterialApp(
+
+
       title: 'Log(My)Ride',
       theme: ThemeData(
         brightness: Brightness.dark,

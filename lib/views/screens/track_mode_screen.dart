@@ -26,7 +26,7 @@ import '../widgets/session_title.dart';
 
 class TrackModeScreen extends StatefulWidget {
   bool sessionStarted = false;
-  Vehicle? selectedVehicle;
+  String? selectedVehicle;
   Track? selectedTrack;
   late Timer timer;
   int timeElapsed = 0;
@@ -54,6 +54,10 @@ class _TrackModeScreenState extends State<TrackModeScreen> {
   @override
   void initState() {
 
+    widget.selectedVehicle = '';
+    widget.selectedTrack = userController.tracks[0];
+
+
     super.initState();
   }
   @override
@@ -61,6 +65,20 @@ class _TrackModeScreenState extends State<TrackModeScreen> {
 
     String selectedDateRange = DateFormat('yyyy-MM-dd').format(DateTime.now());
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: primaryColor,
+        onPressed: () {
+        showDialog(context: context, builder: (context) => StartSessionDialog(
+          onSessionStart: (vehicle, track) {
+            setState(() {
+              widget.sessionStarted = true;
+              Get.to(() => const CurrentSessionScreen());
+
+            });
+          },
+        ));
+      }, child: const Icon(LineIcons.play),) ,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       appBar: AppBar(
         title: const Text('Track Mode'),
 
@@ -110,7 +128,7 @@ class _TrackModeScreenState extends State<TrackModeScreen> {
               const Divider(),
               const SizedBox(height: 10),*/
 
-              ElevatedButton(
+              /*ElevatedButton(
 
                 style: ButtonStyle(
                   minimumSize: WidgetStateProperty.all(const Size(double.infinity, 100)),
@@ -135,7 +153,7 @@ class _TrackModeScreenState extends State<TrackModeScreen> {
                   });
                 },
                 child: Text('START NEW SESSION', style:GoogleFonts.orbitron(fontSize: 12, fontWeight: FontWeight.bold, color: primaryColor),),
-              ),
+              ),*/
               /*AppContainer(
                 height: !widget.sessionStarted ? 100 : 430,
                 child: !widget.sessionStarted ? Center(

@@ -106,6 +106,7 @@ class _TrackRideSummaryScreenState extends State<TrackRideSummaryScreen> with Si
 
     return Scaffold(
       appBar: AppBar(
+
         title: const Text('Track Ride Summary'),
       ),
       body: Column(

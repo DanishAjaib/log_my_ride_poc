@@ -15,6 +15,8 @@ import 'package:log_my_ride/views/widgets/tuner_tile.dart';
 
 import '../../controllers/user_controller.dart';
 import '../../utils/utils.dart';
+import '../widgets/my_custom_tune_tile.dart';
+import '../widgets/new_custom_tune_dialog.dart';
 
 class TuningModeScreen extends StatefulWidget {
 
@@ -30,6 +32,34 @@ class _TuningModeScreenState extends State<TuningModeScreen> with SingleTickerPr
   late TabController tabController;
 
   var userController = Get.find<UserController>();
+
+  //my custom tune data
+  final List<Map<String, dynamic>> _customTuneData = [
+    {
+      'name': 'Custom Tune 1',
+      'description': faker.lorem.sentence(),
+      'time': faker.date.dateTime(minYear: 2024, maxYear: 2025),
+      'status': 'Delivered',
+    },
+    {
+      'name': 'Custom Tune 2',
+      'description': faker.lorem.sentence(),
+      'time': faker.date.dateTime(minYear: 2024, maxYear: 2025),
+      'status': 'Delivered',
+    },
+    {
+      'name': 'Custom Tune 3',
+      'description': faker.lorem.sentence(),
+      'time': faker.date.dateTime(minYear: 2024, maxYear: 2025),
+      'status': 'Pending Submission',
+    },
+    {
+      'name': 'Custom Tune 4',
+      'description': faker.lorem.sentence(),
+      'time': faker.date.dateTime(minYear: 2024, maxYear: 2025),
+      'status': 'In Progress',
+    },
+  ];
 
   var currentSubscriptions = [
     {
@@ -100,7 +130,7 @@ class _TuningModeScreenState extends State<TuningModeScreen> with SingleTickerPr
 
   @override
   void initState() {
-    tabController = TabController(length: 3, vsync: this);
+    tabController = TabController(length: 4, vsync: this);
     super.initState();
   }
   @override
@@ -112,17 +142,19 @@ class _TuningModeScreenState extends State<TuningModeScreen> with SingleTickerPr
       body: Container(
         padding: const EdgeInsets.all(10),
         child: SingleChildScrollView(
-          child: Container(
+          child: SizedBox(
             height: Get.height,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 TabBar(
+                  isScrollable:  true,
+
                   splashBorderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
                   indicatorColor: primaryColor,
                   labelColor: primaryColor,
-                
+
                   controller: tabController,
                   tabs: const [
                     Tab(
@@ -134,6 +166,9 @@ class _TuningModeScreenState extends State<TuningModeScreen> with SingleTickerPr
                     Tab(
                       text: 'Received Maps',
                     ),
+                    Tab(
+                      text: 'My Custom Tune'
+                    )
                   ],
                 ),
             
@@ -374,6 +409,36 @@ class _TuningModeScreenState extends State<TuningModeScreen> with SingleTickerPr
                             ),
 
                           ],
+                        ),
+                      ),
+                      SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                              children: [
+                                const SizedBox(height: 20,),
+
+                                //myCustomeTune Data List
+                                ListView.builder(itemBuilder:  (context, index) {
+                                  return MyCustomTuneTile(myCustomTune:  _customTuneData[index],
+                                      onPressed: () {
+                                        showDialog(context: context, builder: (context) {
+                                          return NewCustomTuneDialog(
+                                            onTuneCreated: () {
+                                              setState(() {
+                                                _customTuneData[index]['status'] = 'In Progress';
+                                              });
+                                            },
+                                          );
+                                        });
+                                      });
+                                },
+                                  itemCount: _customTuneData.length,
+                                  shrinkWrap: true,
+                                ),
+
+                              ]
+                          ),
                         ),
                       ),
                     ],

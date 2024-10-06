@@ -29,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
       if (_opacity == 1.0) {
         timer.cancel();
-        Future.delayed(const Duration(seconds: 2), () {
+        Future.delayed(const Duration(milliseconds: 500), () {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => LoginScreen()),
@@ -46,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Center(
         child: AnimatedOpacity(
           opacity: _opacity,
-          duration: const Duration(seconds: 2),
+          duration: const Duration(milliseconds: 500),
           child: SizedBox(
               width: 150,
               height: 150,

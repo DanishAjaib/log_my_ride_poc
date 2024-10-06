@@ -365,6 +365,8 @@ List<SpeedData> generateLeanAngleData(int count) {
 
   return data;
 }
+
+
 List<SpeedData> generateSpeedData(int count) {
   List<SpeedData> data = [];
   List<double> speeds = [

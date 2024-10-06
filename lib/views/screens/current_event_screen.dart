@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:log_my_ride/views/screens/splash_screen.dart';
 import 'package:log_my_ride/views/widgets/app_container.dart';
 import 'package:log_my_ride/views/widgets/dummy_map_container.dart';
 import 'package:lottie/lottie.dart';
@@ -14,6 +15,7 @@ import '../../utils/constants.dart';
 import '../../utils/utils.dart';
 import '../widgets/timer_builder.dart';
 import 'complete_event_screen.dart';
+import 'main_screen.dart';
 
 class CurrentEventScreen extends StatefulWidget {
 
@@ -318,7 +320,12 @@ class _CurrentEventScreenState extends State<CurrentEventScreen> {
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      Get.to(() => CompleteEventScreen(currentEvent: widget.currentEvent ,));
+                      Get.offAll(() => const SplashScreen());
+                      Future.delayed(Duration.zero, () {
+                        // Once HomeScreen is loaded, navigate to the second screen
+                        Get.to(() => CompleteEventScreen(currentEvent: widget.currentEvent ,));
+                      });
+
                     },
                     child: const Text('End Event', style: TextStyle(color: Colors.red),),
                   )

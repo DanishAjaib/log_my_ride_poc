@@ -1,9 +1,12 @@
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:line_icons/line_icon.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:log_my_ride/controllers/events_controller.dart';
+import 'package:log_my_ride/views/screens/event_summary_screen.dart';
 
 import '../../utils/constants.dart';
 import '../../utils/utils.dart';
@@ -19,6 +22,14 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
 
   bool sendingFriendRequest = false;
   var recentActivity = [
+    {
+      'title' : 'Event',
+      'date' : DateFormat.yMMMd().format(faker.date.dateTime(minYear: 2022, maxYear: 2022)),
+      'icon' : LineIcons.calendarAlt,
+      'avgSpeed' : '30',
+      'distance' : '200.5km',
+      'maxLeanAngle' : '45',
+    },
     {
       'title' : 'Road',
       'date' : DateFormat.yMMMd().format(faker.date.dateTime(minYear: 2022, maxYear: 2022)),
@@ -47,9 +58,13 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
       'maxLeanAngle' : '30',
 
     },
+
+
   ];
   @override
   Widget build(BuildContext context) {
+
+    var eventsController = Get.put(EventController());
     return Scaffold(
       appBar:   AppBar(
         title: const Text('User Profile'),
@@ -72,7 +87,7 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
               Column(
                 children: [
                   const Text('Rank', style: TextStyle(fontSize: 12, color: Colors.grey),),
-                  Text(faker.randomGenerator.integer(5, min: 1).toString(), style: const TextStyle(fontSize: 14, color: primaryColor),),
+                  Text(faker.randomGenerator.integer(5, min: 1).toString(), style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold),),
                 ],
               ),
               const SizedBox(width: 10),
@@ -81,7 +96,7 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
               Column(
                 children: [
                   const Text('Rides', style: TextStyle(fontSize: 12, color: Colors.grey),),
-                  Text(' ${faker.randomGenerator.integer(100, min: 1)}', style: const TextStyle(fontSize: 14, color: primaryColor),),
+                  Text(' ${faker.randomGenerator.integer(100, min: 1)}', style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold),),
                 ],
               ),
               const SizedBox(width: 10),
@@ -90,7 +105,7 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
               Column(
                 children: [
                   const Text('Vehicles', style: TextStyle(fontSize: 12, color: Colors.grey),),
-                  Text(faker.randomGenerator.integer(50, min: 1).toString(), style: const TextStyle(fontSize: 14, color: primaryColor),),
+                  Text(faker.randomGenerator.integer(50, min: 1).toString(), style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold),),
                 ],
               ),
 
@@ -101,7 +116,7 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
           const SizedBox(height: 5),
           Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Text(faker.lorem.sentences(4).join(' '), style: const TextStyle(fontSize: 12,  color: primaryColor, fontStyle: FontStyle.italic), textAlign: TextAlign.center, )),
+              child: Text(faker.lorem.sentences(4).join(' '), style: const TextStyle(fontSize: 12,  color: Colors.grey, fontStyle: FontStyle.italic), textAlign: TextAlign.center, )),
           const SizedBox(height: 10),
           ElevatedButton.icon(
             label: const Text('Add Friend', style: TextStyle(color: Colors.white),),
@@ -138,7 +153,7 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
             alignment: Alignment.centerLeft,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Text('Recent Activity', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+              child: Text('Recent Activity'),
             ),
           ),
           const SizedBox(height: 10),
@@ -148,7 +163,7 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
                 itemBuilder: (context, index) {
 
               return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
                 child: ElevatedButton(
                   style:  ButtonStyle(
                     shape: MaterialStateProperty.all(
@@ -157,7 +172,9 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
                       ),
                     ),
                   ),
-                    onPressed: () {},
+                    onPressed: () {
+                       Get.to(() => EventSummaryScreen(event: eventsController.events[0]));
+                    },
                     child: ListTile(
                       leading: CircleAvatar(
                         radius: 25,

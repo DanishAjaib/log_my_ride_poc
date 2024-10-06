@@ -63,9 +63,6 @@ class _TunerProfileScreenState extends State<TunerProfileScreen> {
                     Text(faker.randomGenerator.integer(50, min: 1).toString(), style: const TextStyle(fontSize: 14, color: primaryColor),),
                   ],
                 ),
-
-
-
               ],
             ),
             const SizedBox(height: 5),

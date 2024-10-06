@@ -8,18 +8,23 @@ import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:log_my_ride/utils/constants.dart';
+import 'package:log_my_ride/utils/utils.dart';
 import 'package:log_my_ride/views/screens/friend_profile_screen.dart';
 import 'package:log_my_ride/views/screens/my_challenges_screen.dart';
 import 'package:log_my_ride/views/widgets/app_container.dart';
 import 'package:log_my_ride/views/widgets/app_social.dart';
+import 'package:log_my_ride/views/widgets/customer_tile.dart';
 import 'package:log_my_ride/views/widgets/friend_tile.dart';
 import 'package:log_my_ride/views/widgets/my_custom_tune_tile.dart';
 import 'package:log_my_ride/views/widgets/new_custom_tune_dialog.dart';
 import 'package:log_my_ride/views/widgets/new_sensor_dialog.dart';
 import 'package:log_my_ride/views/widgets/new_vehicle_dialog.dart';
+import 'package:log_my_ride/views/widgets/random_spline_chart.dart';
 import 'package:log_my_ride/views/widgets/sensor_tile.dart';
 import 'package:log_my_ride/views/widgets/vehicle_tile.dart';
 import 'package:multiavatar/multiavatar.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:timelines/timelines.dart';
 
 import '../../controllers/events_controller.dart';
 import '../../controllers/sensors_controller.dart';
@@ -28,6 +33,7 @@ import '../../controllers/vehicles_controller.dart';
 import '../widgets/event_tile.dart';
 import '../widgets/rating_bar.dart';
 import 'event_summary_screen.dart';
+import 'login_screen.dart';
 
 
 enum TuningStatus {
@@ -69,6 +75,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> with SingleTickerProv
   late TabController tabController;
   var eventsController = Get.put(EventController());
   var sensorsController = Get.put(SensorsController());
+  var _studentsCategory = 'enduro';
+  var _allStudentCategories = ['dirt', 'road', 'speedway', 'mx', 'enduro', 'trials', 'sprint', 'supermoto', 'side-cars', 'scooters'];
 
   final List<Map<String, dynamic>> _vehicleData = [
     {
@@ -115,6 +123,50 @@ class _MyProfileScreenState extends State<MyProfileScreen> with SingleTickerProv
     },
   ];
 
+  List<Map<String, dynamic>> skillsData = [
+    {
+      'time_spent_minutes': 30,
+      'average_speed_kmh': 80.5
+    },
+    {
+      'time_spent_minutes': 45,
+      'average_speed_kmh': 85.3
+    },
+    {
+      'time_spent_minutes': 60,
+      'average_speed_kmh': 82.1
+    },
+    {
+      'time_spent_minutes': 25,
+      'average_speed_kmh': 78.0
+    },
+    {
+      'time_spent_minutes': 50,
+      'average_speed_kmh': 88.7
+    },
+    {
+      'time_spent_minutes': 55,
+      'average_speed_kmh': 90.1
+    },
+    {
+      'time_spent_minutes': 40,
+      'average_speed_kmh': 83.2
+    },
+    {
+      'time_spent_minutes': 35,
+      'average_speed_kmh': 79.4
+    },
+    {
+      'time_spent_minutes': 65,
+      'average_speed_kmh': 91.5
+    },
+    {
+      'time_spent_minutes': 70,
+      'average_speed_kmh': 93.0
+    }
+  ];
+
+
   final List<Map<String, dynamic>> _sensorData = [
     {
       'image': 'assets/images/sensor_1.jpg',
@@ -138,6 +190,15 @@ class _MyProfileScreenState extends State<MyProfileScreen> with SingleTickerProv
       'lastSession': 'Session 3',
     },
   ];
+
+  final List<Map<String, dynamic>> _customersData = List<Map<String, dynamic>>.generate(
+    6, (index) => {
+      'name': faker.person.name(),
+      'events': faker.randomGenerator.integer(18, min: 5),
+      'email': faker.internet.email(),
+      'added': faker.date.dateTime(minYear: 2024, maxYear: 2025).millisecondsSinceEpoch,
+    },
+  );
 
   final List<Map<String, dynamic>> _friendData = [
     {
@@ -222,33 +283,92 @@ class _MyProfileScreenState extends State<MyProfileScreen> with SingleTickerProv
       'time': faker.date.dateTime(minYear: 2024, maxYear: 2025),
     },
   ];
-  //my custom tune data
-  final List<Map<String, dynamic>> _customTuneData = [
+
+  var recentActivity = [
     {
-      'name': 'Custom Tune 1',
-      'description': faker.lorem.sentence(),
-      'time': faker.date.dateTime(minYear: 2024, maxYear: 2025),
-      'status': 'Delivered',
+      'title' : 'Event',
+      'date' : DateFormat.yMMMd().format(faker.date.dateTime(minYear: 2022, maxYear: 2022)),
+      'icon' : LineIcons.calendarAlt,
+      'avgSpeed' : '30',
+      'before' : '10',
+      'after' : '20',
+      'distance' : '200.5km',
+      'maxLeanAngle' : '45',
     },
     {
-      'name': 'Custom Tune 2',
-      'description': faker.lorem.sentence(),
-      'time': faker.date.dateTime(minYear: 2024, maxYear: 2025),
-      'status': 'Delivered',
+      'title' : 'Road',
+      'date' : DateFormat.yMMMd().format(faker.date.dateTime(minYear: 2022, maxYear: 2022)),
+      'icon' : LineIcons.road,
+      'avgSpeed' : '30',
+      'before' : '10',
+      'after' : '20',
+      'distance' : '2.5km',
+      'maxLeanAngle' : '30',
     },
     {
-      'name': 'Custom Tune 3',
-      'description': faker.lorem.sentence(),
-      'time': faker.date.dateTime(minYear: 2024, maxYear: 2025),
-      'status': 'Pending Submission',
+      'title' : 'Ride',
+      'date' : DateFormat.yMMMd().format(faker.date.dateTime(minYear: 2022, maxYear: 2022)),
+      'time' : '11:30',
+      'icon' : LineIcons.car,
+      'avgSpeed' : '30',
+      'distance' : '2.5km',
+      'before' : '10',
+      'after' : '20',
+      'maxLeanAngle' : '30',
+
     },
     {
-      'name': 'Custom Tune 4',
-      'description': faker.lorem.sentence(),
-      'time': faker.date.dateTime(minYear: 2024, maxYear: 2025),
-      'status': 'In Progress',
+      'title' : 'Ride',
+      'date' : DateFormat.yMMMd().format(faker.date.dateTime(minYear: 2022, maxYear: 2022)),
+      'time' : '11:30',
+      'icon' : LineIcons.car,
+      'avgSpeed' : '30',
+      'distance' : '2.5km',
+      'before' : '10',
+      'after' : '20',
+      'maxLeanAngle' : '30',
+
     },
+
+
   ];
+
+
+  final  List<Map<String, dynamic>> mySkills = [
+    {
+      'name': 'Max Lean Angle',
+      'value': 35,
+    },
+    {
+      'name': 'Average Speed',
+      'value': 85,
+    },
+    {
+      'name': 'Max Speed',
+      'value': 150,
+    },
+    {
+      'name': 'Sector Timing',
+      'value': 75,
+    },
+    {
+      'name': 'Max RPM',
+      'value': 9000,
+    },
+    {
+      'name': 'Average RPM',
+      'value': 6000,
+    },
+    //max lateral g-force
+    {
+      'name': 'Max Lateral G-Force',
+      'value': 6.8,
+    },
+
+
+
+  ];
+
 
 
   void _setVehicleSortState(int columnIndex, bool ascending) {
@@ -337,17 +457,16 @@ class _MyProfileScreenState extends State<MyProfileScreen> with SingleTickerProv
             indicatorColor: primaryColor,
             labelColor: primaryColor,
             controller: tabController,
-            tabs: const [
+            tabs: [
               Tab(text: 'Personal Info'),
               Tab(text: 'My Vehicles'),
               Tab(text: 'My Sensors'),
-              Tab(text: 'My Skills'),
+              Tab(text: getUserTabName( userController.selectedUserType.value)),
               Tab(text: 'My Friends'),
               Tab(text: 'My Events'),
               Tab(text: 'My Clubs'),
-              Tab(text: 'My Challenges'),
+              /*Tab(text: 'My Challenges'),*/
               Tab(text: 'My Notifications'),
-              Tab(text: 'My Custom Tune'),
             ],
           ),
           Expanded(
@@ -682,7 +801,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> with SingleTickerProv
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
                       children: [
-                        const SizedBox(height: 20,),
                         Row(
                           children: [
                             const Text('MY SENSORS', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
@@ -699,20 +817,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> with SingleTickerProv
                             )
                           ],
                         ),
-                        const SizedBox(height: 10,),
-                        /*TextField(
-                          controller: _sensorSearchController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                            labelText: 'Search Sensors',
-                            prefixIcon: const Icon(Icons.search),
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              _sensorSearchQuery = value;
-                            });
-                          },
-                        ),*/
+
                         SingleChildScrollView(
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -757,10 +862,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> with SingleTickerProv
                           ),
                         ),
 
-
-
-
-
                         /*AppContainer(
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
@@ -801,20 +902,199 @@ class _MyProfileScreenState extends State<MyProfileScreen> with SingleTickerProv
                   ),
                 ),
                 //skills
-                const SingleChildScrollView(
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        SizedBox(height: 20,),
-                        Row(
-                          children: [
-                            Text('MY SKILLS', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
 
-                          ],
-                        ),
-                        SizedBox(height: 10,),
-                        AppContainer(
+                if(Get.find<UserController>().selectedUserType.value == UserType.COACH)
+                  SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Row(
+                              children: [
+                                const Text('Students', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
+                                const Spacer(),
+                                //search button
+                                TextButton.icon(onPressed: () {
+
+                                  //show bottom modal sheet
+                                  showModalBottomSheet(context: context, builder: (context) {
+                                    return Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const Padding(
+                                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                                            child: Text('Search Students', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),)),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: TextField(
+                                            decoration: InputDecoration(
+                                              labelText: 'Search symmetric',
+                                              prefixIcon: const Icon(Icons.search),
+                                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                                            ),
+                                          ),
+                                        ),
+                                        const Divider(color: primaryColor,),
+                                        ListView.builder(itemBuilder:  (context, index) {
+                                          return ListTile(
+                                            title: Text(_customersData[index]['name']),
+                                            subtitle: Text(_customersData[index]['email']),
+
+                                          );
+                                        },
+                                          itemCount: _clubData.length,
+                                          shrinkWrap: true,
+                                        ),
+
+                                      ],
+                                    );
+                                  });
+
+                                }, label: const Text('Search', style: TextStyle(color: Colors.white),), icon: const Icon(Icons.search, color: Colors.white, size: 16)) ,
+                                TextButton.icon(onPressed: () {
+                                  showDialog(context: context, builder:  (context) {
+                                    return AlertDialog(
+                                      title: const Text('Select Category'),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: _allStudentCategories.map((category) {
+                                          return ListTile(
+                                            title: Text(category),
+                                            onTap: () {
+                                              setState(() {
+                                                _studentsCategory = category;
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                          );
+                                        }).toList(),
+                                      ),
+                                    );
+                                  });
+
+                                }, label: Text(_studentsCategory, style: const TextStyle(color: Colors.white),), icon: const Icon(Icons.sort, color: Colors.white, size: 16)),
+                              ],
+                            ),
+                          ),
+                          ..._customersData.map((friend) {
+                            return Padding(
+                                padding: const EdgeInsets.only(bottom: 5),
+                                child: CustomerTile(onPressed: (friend) {
+                                  Get.to(() => const FriendProfileScreen());
+
+                                }, friend: friend));
+                          }).toList(),
+
+                        ],
+                      )
+                    )
+                  ),
+
+
+                if(Get.find<UserController>().selectedUserType.value == UserType.PROMOTER)
+                  //my customers
+                  SingleChildScrollView(
+                    physics:  const BouncingScrollPhysics(),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Row(
+                              children: [
+                                const Text('Customers', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
+                                const Spacer(),
+                                //search button
+                                TextButton.icon(onPressed: () {
+
+                                  //show bottom modal sheet
+                                  showModalBottomSheet(context: context, builder: (context) {
+                                    return Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const Padding(
+                                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                                            child: Text('Search Customers', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),)),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: TextField(
+                                            decoration: InputDecoration(
+                                              labelText: 'Search Customers',
+                                              prefixIcon: const Icon(Icons.search),
+                                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                                            ),
+                                          ),
+                                        ),
+                                        const Divider(color: primaryColor,),
+                                        ListView.builder(itemBuilder:  (context, index) {
+                                          return ListTile(
+                                            title: Text(_customersData[index]['name']),
+                                            subtitle: Text(_customersData[index]['email']),
+
+                                          );
+                                        },
+                                          itemCount: _clubData.length,
+                                          shrinkWrap: true,
+                                        ),
+
+                                      ],
+                                    );
+                                  });
+
+                                }, label: const Text('Search', style: TextStyle(color: Colors.white),), icon: const Icon(Icons.search, color: Colors.white, size: 16)) ,
+                                TextButton.icon(onPressed: () {
+                                  if(_friendsSortState) {
+
+                                    setState(() {
+                                      _friendData.sort((b, a) => a['added'].compareTo(b['added']));
+                                      _friendsSortState = false;
+                                    });
+                                  } else {
+
+                                    setState(() {
+                                      _friendData.sort((b, a) => a['rideTime'].compareTo(b['rideTime']));
+                                      _friendsSortState = true;
+                                    });
+                                  }
+                                  setState(() {});
+                                }, label: Text(_friendsSortState ? 'Past' : 'Suggested', style: const TextStyle(color: Colors.white),), icon: const Icon(Icons.sort, color: Colors.white, size: 16)),
+
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 10,),
+
+                          ..._customersData.map((friend) {
+                            return Padding(
+                                padding: const EdgeInsets.only(bottom: 5),
+                                child: CustomerTile(onPressed: (friend) {
+                                  Get.to(() => const FriendProfileScreen());
+
+                                }, friend: friend));
+                          }).toList(),
+                        ]
+                      ),
+                    ),
+                  ),
+
+
+                if(Get.find<UserController>().selectedUserType.value == UserType.RIDER)
+                  //my skills
+                SingleChildScrollView(
+                  physics:  const BouncingScrollPhysics(),
+                  scrollDirection: Axis.vertical,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment:  CrossAxisAlignment.start,
+                      children: [
+
+                        const SizedBox(height: 10,),
+                        const AppContainer(
                           child: Column(
                             children: [
                               ListTile(
@@ -824,7 +1104,22 @@ class _MyProfileScreenState extends State<MyProfileScreen> with SingleTickerProv
                               Divider(),
                               ListTile(
                                 title: Text('Skill Level'),
-                                subtitle: Text('Confirmed'),
+                                subtitle: Text('Intermediate'),
+                                trailing: Stack(
+                                  children: [
+                                    CircularProgressIndicator(
+                                      value: 0.75,
+                                      backgroundColor: Colors.grey,
+                                      valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                                    ),
+                                    Positioned(
+                                        right: 0,
+                                        top: 9,
+                                        left: 8,
+                                        child: Text('75%', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),))
+
+                                  ],
+                                ),
                               ),
                               Divider(),
                               ListTile(
@@ -834,6 +1129,191 @@ class _MyProfileScreenState extends State<MyProfileScreen> with SingleTickerProv
                             ],
                           ),
                         ),
+                        const SizedBox(height: 10,),
+                        //skills
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Row(
+                            children: [
+                              Text('Skills'),
+                              const Spacer(),
+                              TextButton(onPressed: () {
+
+                              }, child: const Text('Add', style: TextStyle(color: primaryColor),))
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 10,),
+                        ...mySkills.map((skill) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 5),
+                            child: ElevatedButton(
+                                
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:  BorderRadius.circular(10),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                    isScrollControlled:true,
+                                      context: context, builder: (context) {
+                                    return SizedBox(
+                                      width: double.infinity,
+                                      height: 800,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: SingleChildScrollView(
+                                          physics:  const BouncingScrollPhysics(),
+                                          child: Column(
+                                            crossAxisAlignment:  CrossAxisAlignment.start,
+                                            children: [
+                                              Text(skill['name'].toString(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+                                              const Text('Analysis'),
+                                              const SizedBox(height: 10,),
+                                              const Divider(color: primaryColor,),
+                                              const SizedBox(height: 10,),
+                                              const Align(
+                                                alignment: Alignment.center,
+                                                child: Text('Time Spent on LMR (mins) vs Skill'),
+                                              ),
+                                              AppContainer(
+                                                child: SfCartesianChart(
+
+
+                                                  primaryXAxis: CategoryAxis(
+                                                    labelAlignment: LabelAlignment.center,
+                                                    minorGridLines: null,
+                                                    majorGridLines: null,
+                                                  ),
+                                                  series: <ChartSeries>[
+                                                    ColumnSeries<Map<String, dynamic>, String>(
+
+                                                      color: primaryColor,
+                                                      dataLabelSettings: const DataLabelSettings(isVisible: true),
+
+                                                      dataSource: skillsData,
+                                                      xValueMapper: (datum, index) => datum['time_spent_minutes'].toString(),
+                                                      yValueMapper: (datum, index) => datum['average_speed_kmh'],
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+
+                                              const SizedBox(height: 10,),
+                                              const Divider(color: primaryColor,),
+                                              const SizedBox(height: 10,),
+                                              const Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Text('Activities contributing to this skill'),
+                                              ),
+                                              const SizedBox(height: 10,),
+                                              ...recentActivity.map((activity) {
+
+                                                return Padding(
+                                                  padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+                                                  child: ElevatedButton(
+                                                      style:  ButtonStyle(
+                                                        shape: WidgetStateProperty.all(
+                                                          RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(10),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      onPressed: () {
+                                                        Get.to(() => EventSummaryScreen(event: eventsController.events[0]));
+                                                      },
+                                                      child: ListTile(
+                                                        leading: CircleAvatar(
+                                                          radius: 25,
+                                                          backgroundColor: primaryColor,
+                                                          child: Icon(activity['icon']as IconData, color: Colors.white,),
+                                                        ),
+                                                        title: Text(activity['title'].toString()),
+                                                        subtitle: Row(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            const Icon(Icons.calendar_month, color: primaryColor, size: 18,),
+                                                            const SizedBox(width: 5,),
+                                                            Text(activity['date'].toString(), style: const TextStyle(color: Colors.grey, fontSize: 14),),
+                                                            const SizedBox(width: 15,),
+                                                            const Icon(Icons.timer, color: primaryColor, size: 18,),
+                                                            const SizedBox(width: 5,),
+                                                            Text(activity['distance'].toString(), style: const TextStyle(color: Colors.grey, fontSize: 14),),
+
+
+
+                                                          ],
+                                                        ),
+                                                      )),
+                                                );
+
+                                              })
+                                              /*Expanded(
+                                                child: ListView.builder(
+                                                    itemCount:  recentActivity.length,
+                                                    itemBuilder: (context, index) {
+
+                                                      return Padding(
+                                                        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+                                                        child: ElevatedButton(
+                                                            style:  ButtonStyle(
+                                                              shape: MaterialStateProperty.all(
+                                                                RoundedRectangleBorder(
+                                                                  borderRadius: BorderRadius.circular(10),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            onPressed: () {
+                                                              Get.to(() => EventSummaryScreen(event: eventsController.events[0]));
+                                                            },
+                                                            child: ListTile(
+                                                              leading: CircleAvatar(
+                                                                radius: 25,
+                                                                backgroundColor: primaryColor,
+                                                                child: Icon(recentActivity[index]['icon']as IconData, color: Colors.white,),
+                                                              ),
+                                                              title: Text(recentActivity[index]['title'].toString()),
+                                                              subtitle: Row(
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  const Icon(Icons.calendar_month, color: primaryColor, size: 18,),
+                                                                  const SizedBox(width: 5,),
+                                                                  Text(recentActivity[index]['date'].toString(), style: const TextStyle(color: Colors.grey, fontSize: 14),),
+                                                                  const SizedBox(width: 15,),
+                                                                  const Icon(Icons.timer, color: primaryColor, size: 18,),
+                                                                  const SizedBox(width: 5,),
+                                                                  Text(recentActivity[index]['distance'].toString(), style: const TextStyle(color: Colors.grey, fontSize: 14),),
+
+
+
+                                                                ],
+                                                              ),
+                                                            )),
+                                                      );
+                                                    }),
+                                              ),*/
+
+
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  });
+                                },
+                                child: ListTile(
+                                  leading: CircleAvatar(
+                                    child: SvgPicture.memory(getRandomSvgCode()),
+                                  ),
+                                  title: Text(skill['name'].toString(),),
+                                  subtitle: Text(skill['value'].toString(), style: const TextStyle(color: primaryColor),),
+                                )
+                            ),
+                          );
+                        }).toList()
+
+
                       ]
                     ),
                   ),
@@ -1099,8 +1579,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> with SingleTickerProv
                     ),
                   ),
                 ),
-                //challenges
-                const MyChallengesScreen(),
+               /* //challenges
+                const MyChallengesScreen(),*/
                 //notifications
                 SingleChildScrollView(
                   child: Padding(
@@ -1127,40 +1607,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> with SingleTickerProv
                     ),
                   ),
                 ),
-                //MyCustomTune overview
-                SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                        children: [
-                          const SizedBox(height: 20,),
-
-                          //myCustomeTune Data List
-                          ListView.builder(itemBuilder:  (context, index) {
-                            return MyCustomTuneTile(myCustomTune:  _customTuneData[index],
-                                onPressed: () {
-                              showDialog(context: context, builder: (context) {
-                                return NewCustomTuneDialog(
-                                  onTuneCreated: () {
-                                    setState(() {
-                                      _customTuneData[index]['status'] = 'In Progress';
-                                    });
-                                  },
-                                );
-                              });
-
-
-                            });
-                          },
-                            itemCount: _customTuneData.length,
-                            shrinkWrap: true,
-                          ),
-
-                        ]
-                    ),
-                  ),
-                ),
-                Container()
 
 
 
@@ -1172,6 +1618,17 @@ class _MyProfileScreenState extends State<MyProfileScreen> with SingleTickerProv
     );
   }
 
+  String getUserTabName(UserType value) {
+    if(value == UserType.RIDER) {
+      return 'My Skills';
+    } else if(value == UserType.PROMOTER) {
+      return 'My Customers';
+    } else if(value == UserType.COACH) {
+      return 'My Students';
+    } else {
+      return 'My Skills';
+    }
 
+  }
 
 }

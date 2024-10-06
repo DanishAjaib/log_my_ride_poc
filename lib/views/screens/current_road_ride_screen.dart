@@ -11,7 +11,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:log_my_ride/controllers/navigation_controller.dart';
 import 'package:log_my_ride/utils/utils.dart';
+import 'package:log_my_ride/views/screens/main_screen.dart';
 import 'package:log_my_ride/views/screens/session_summary_screen.dart';
+import 'package:log_my_ride/views/screens/splash_screen.dart';
 import 'package:log_my_ride/views/widgets/dummy_map_container.dart';
 import 'package:log_my_ride/views/widgets/metric_container.dart';
 import 'package:log_my_ride/views/widgets/notification_tile.dart';
@@ -224,7 +226,13 @@ class _CurrentRoadRideScreenState extends State<CurrentRoadRideScreen> {
                     TextButton(onPressed: () {
                       _rideTimer?.cancel();
                       Navigator.pop(context);
-                      Get.to(() => const SessionSummaryScreen());
+                      /*Get.to(() => const SessionSummaryScreen());*/
+                      Get.offAll(() => SplashScreen());
+                      Future.delayed(Duration.zero, () {
+                        // Once HomeScreen is loaded, navigate to the second screen
+                        Get.to(() => const SessionSummaryScreen());
+                      });
+
 
                     }, child: const Text('Yes')),
                   ],

@@ -2,10 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:log_my_ride/utils/constants.dart';
 import 'package:log_my_ride/views/screens/current_event_screen.dart';
+import 'package:log_my_ride/views/screens/events_screen.dart';
 import 'package:log_my_ride/views/widgets/app_container.dart';
 import 'package:log_my_ride/views/widgets/dummy_map_container.dart';
+
+import 'main_screen.dart';
 
 class EventSummaryScreen extends StatefulWidget {
 
@@ -579,6 +583,67 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
                       ),
                       onPressed: () {
                         //book event
+                        showDialog(context: context, builder: (context) {
+                          return AlertDialog(
+                            title: const Text('Book Event'),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text('Selected Payment Method'),
+                                const SizedBox(height: 10,),
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: primaryColor),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: const Row(
+                                    children: [
+                                      Icon(LineIcons.creditCard, color: primaryColor,),
+                                      SizedBox(width: 10,),
+                                      Text('Visa **** 1234', style: TextStyle(color: primaryColor),),
+                                      Spacer(),
+                                      Icon(LineIcons.angleRight, color: primaryColor,),
+                                    ],
+                                  ),
+                                ),
+
+                                const SizedBox(height: 20,),
+
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('Cancel'),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        //purchase
+                                        Navigator.pop(context);
+                                        Get.snackbar('Success', 'Event Booked Successfully', backgroundColor: Colors.green, colorText: Colors.white);
+                                        Get.offAll(() => const MainScreen());
+                                        Future.delayed(Duration.zero, () {
+                                          Get.to(() => const EventsScreen());
+                                        });
+
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                          backgroundColor: primaryColor,
+                                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(50),
+                                          )
+                                      ), child: const Text('Purchase', style: TextStyle(color:Colors.white),),),
+                                  ],
+                                )
+                              ],
+                            ),
+                          );
+                        });
                       },
                       child: const Text('Book Event'),
                     ),

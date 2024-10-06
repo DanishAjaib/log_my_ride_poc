@@ -6,7 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:log_my_ride/utils/constants.dart';
+import 'package:log_my_ride/views/screens/main_screen.dart';
 import 'package:log_my_ride/views/screens/session_summary_screen.dart';
+import 'package:log_my_ride/views/screens/splash_screen.dart';
 import 'package:log_my_ride/views/screens/track_ride_summary_screen.dart';
 import 'package:log_my_ride/views/widgets/app_container.dart';
 import 'package:log_my_ride/views/widgets/random_spline_chart.dart';
@@ -33,23 +35,25 @@ class _CurrentSessionScreenState extends State<CurrentSessionScreen> {
   @override
   void dispose() {
     loggingController.stopSensorStreams();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     super.dispose();
   }
   @override
   void initState() {
     _startCountdownTimer();
-    /*loggingController.timeElapsed.listen((value) {
-      _updateChartData();
-    });
-*/
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+    ]);
     super.initState();
   }
+
+
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
+
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton:  !showReady ? Row(
@@ -65,15 +69,22 @@ class _CurrentSessionScreenState extends State<CurrentSessionScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       ListTile(
-                        title: const Text('Continue'),
+                        title: const Text('Yes'),
                         onTap: () {
                           loggingController.stopSensorStreams();
                           loggingController.sensorTimer?.cancel();
-                         Get.offAll(() => TrackRideSummaryScreen());
+                          Get.offAll(() => const SplashScreen());
+                          Future.delayed(Duration.zero, () {
+                            // Once HomeScreen is loaded, navigate to the second screen
+                            Get.to(() => const TrackRideSummaryScreen());
+                          });
+/*
+                         Get.offAll(() => const TrackRideSummaryScreen());
+*/
                         },
                       ),
                       ListTile(
-                        title: const Text('Cancel'),
+                        title: const Text('No'),
                         onTap: () {
                           // loggingController.discardSession();
                           Navigator.pop(context);
@@ -86,7 +97,7 @@ class _CurrentSessionScreenState extends State<CurrentSessionScreen> {
             },
             child: const Icon(Icons.stop),
           ),
-          const SizedBox(width: 8,),
+          /*const SizedBox(width: 8,),
           FloatingActionButton(
             backgroundColor: primaryColor,
             onPressed: () {
@@ -116,7 +127,7 @@ class _CurrentSessionScreenState extends State<CurrentSessionScreen> {
               });
             },
             child: const Icon(Icons.settings),
-          ),
+          ),*/
         ]
       ) : null,
 
@@ -133,10 +144,10 @@ class _CurrentSessionScreenState extends State<CurrentSessionScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
 
                       children: [
-                        Text('LEAN ANGLE'),
+                        const Text('LEAN ANGLE'),
                         Obx(() => Text('${loggingController.leanAngle.value.toStringAsFixed(1)}°', style: GoogleFonts.orbitron(fontSize: 40, fontWeight: FontWeight.bold, color: primaryColor)),),
-                        Divider(),
-                        Text('Gravity'),
+                        const Divider(),
+                        const Text('Gravity'),
                         Obx(() => Text('${loggingController.gforce.value.toStringAsFixed(1)}'
                             ''
                             '°', style: GoogleFonts.orbitron(fontSize: 40, fontWeight: FontWeight.bold, color: primaryColor)),),
@@ -169,7 +180,7 @@ class _CurrentSessionScreenState extends State<CurrentSessionScreen> {
                                           text: '${loggingController.speed.value.roundToDouble()}',
                                           style: GoogleFonts.orbitron(fontSize: 35, fontWeight: FontWeight.bold, color: primaryColor),
                                           children: <TextSpan>[
-                                            TextSpan(text: 'km/h', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold))
+                                            const TextSpan(text: 'km/h', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold))
                                           ]
                                       )),
                                       angle: 90,

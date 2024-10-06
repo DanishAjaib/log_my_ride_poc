@@ -7,6 +7,8 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:log_my_ride/controllers/location_controller.dart';
+import 'package:log_my_ride/controllers/logging_controller.dart';
+import 'package:log_my_ride/controllers/replay_timer_controller.dart';
 import 'package:log_my_ride/controllers/user_controller.dart';
 import 'package:log_my_ride/views/screens/club_home_screen.dart';
 import 'package:log_my_ride/views/screens/coach_home_screen.dart';
@@ -39,6 +41,8 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
   final PageController _pageController = PageController();
   final UserController userController = Get.put(UserController());
+  final LoggingController loggingController = Get.put(LoggingController());
+  final ReplayTimerController replayTimerController = Get.put(ReplayTimerController());
   final LocationController _mapController = Get.put(LocationController());
 
   @override
@@ -48,6 +52,43 @@ class _MainScreenState extends State<MainScreen> {
 
     ]);
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: primaryColor,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(50)),
+        ),
+        onPressed: () {
+          // select track mode or ride mode
+          showDialog(context: context, builder: (context) {
+            return AlertDialog(
+              title: const Text('Select Mode'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    title: const Text('Track Mode'),
+                    onTap: () {
+                      Navigator.pop(context);
+                      //_pageController.animateToPage(2, duration: const Duration(milliseconds: 400), curve: Curves.easeInOut);
+                      Get.to(() => TrackModeScreen());
+                    },
+                  ),
+                  ListTile(
+                    title: const Text('Road Mode'),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Get.to(() => RoadModeScreen());
+                    },
+                  ),
+                ],
+              ),
+            );
+          });
+        },
+        child: const Icon(Icons.add),
+      ),
         appBar: AppBar(
           iconTheme: const IconThemeData(color: Colors.white),
           title: Text('LogMyRide', style: GoogleFonts.orbitron(color:Colors.white, fontSize:15)),
@@ -77,12 +118,12 @@ class _MainScreenState extends State<MainScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const SizedBox(
+                    SizedBox(
                       width: 50,
                       height: 50,
                       child: CircleAvatar(
                         radius: 50,
-                        backgroundImage: AssetImage('assets/images/lmr_logo.png'),
+                        child: SvgPicture.memory(getRandomSvgCode()),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -197,17 +238,17 @@ class _MainScreenState extends State<MainScreen> {
                   icon: Icon(Icons.home_filled,),
                   label: 'Home',
                 ),
-                NavigationDestination(
+                const NavigationDestination(
                   icon: Icon(LineIcons.mapPin),
                   label: 'TrackMyRide',
                 ),
-                NavigationDestination(
+                const NavigationDestination(
                   icon: Icon(Icons.people_alt_outlined),
-                  label: 'Social',
+                  label: 'MyChallenges',
                 ),
                 //const SizedBox(width: 100),
                 //add button
-                NavigationDestination(
+                const NavigationDestination(
                   icon: Icon(LineIcons.biking, color: Colors.white,),
                   label: 'LogMyRide',
                 ),
