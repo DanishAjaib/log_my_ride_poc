@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 const Color primaryColor = Colors.deepOrange;
 const headingColor = Color(0xFFFFFFFF);
-const titleSize = 30.0;
+const titleSize = 20.0;
 const subTitleSize = 16.0;
 const defaultPadding = 10.0;
 const defaultDuration = Duration(milliseconds: 250);

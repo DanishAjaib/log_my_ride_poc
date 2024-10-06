@@ -3,7 +3,9 @@ import 'dart:math';
 import 'package:get/get.dart' as lmrGet;
 import 'package:log_my_ride/controllers/navigation_controller.dart';
 import 'package:log_my_ride/views/widgets/random_spline_chart.dart';
+/*
 import 'package:sensors_plus/sensors_plus.dart';
+*/
 import 'dart:io';
 import 'package:rxdart/rxdart.dart';
 import 'package:path_provider/path_provider.dart';
@@ -31,8 +33,8 @@ class LoggingController extends lmrGet.GetxController {
   double rotationThreshold = 5.0;
   double previousRotationAngle = 0.0;
 
-  StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
-  StreamSubscription<GyroscopeEvent>? _gyroscopeSubscription;
+/*  StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
+  StreamSubscription<GyroscopeEvent>? _gyroscopeSubscription;*/
 
   lmrGet.RxInt timeElapsed = 0.obs;
 
@@ -48,7 +50,7 @@ class LoggingController extends lmrGet.GetxController {
     sensorTimer = Timer.periodic(const Duration(milliseconds: 20), (timer) {
       timeElapsed.value = DateTime.now().difference(startTime.value).inMilliseconds;
     });
-    _accelerometerSubscription = accelerometerEventStream(
+/*    _accelerometerSubscription = accelerometerEventStream(
       samplingPeriod: const Duration(milliseconds: 20),
     ).throttleTime(const Duration(seconds: 1)).listen((AccelerometerEvent event) {
       _processAccelerometerData(event);
@@ -58,13 +60,13 @@ class LoggingController extends lmrGet.GetxController {
       samplingPeriod: const Duration(milliseconds: 20),
     ).throttleTime(const Duration(seconds: 1)).listen((GyroscopeEvent event) {
       _processGyroscopeData(event);
-    });
+    });*/
 
   }
   void stopSensorStreams() {
 
-    _accelerometerSubscription?.cancel();
-    _gyroscopeSubscription?.cancel();
+/*    _accelerometerSubscription?.cancel();
+    _gyroscopeSubscription?.cancel();*/
     timeElapsed.value = 0;
 
     sensorTimer?.cancel();
@@ -142,7 +144,7 @@ class LoggingController extends lmrGet.GetxController {
       eventBatch.clear();
     }
   }*/
-
+/*
   void _processAccelerometerData(AccelerometerEvent event) {
 
     _x = event.x;
@@ -239,7 +241,7 @@ class LoggingController extends lmrGet.GetxController {
       dataRows.refresh();
     }
 
-  }
+  }*/
   }
 
 /*  void startSensorTimer() {

@@ -35,10 +35,13 @@ class _GpsModeScreenState extends State<GpsModeScreen> with SingleTickerProvider
   var currentGeoFence;
   Region? currentRegion ;
   bool creatingGeofence = false;
-  double geofenceRadius = 200;
+  double geofenceRadius = 0;
 
   double top = 200;
   double left = 200;
+
+  bool geofenceCreateMode =  false;
+  Size createdGeofenceSize = const Size(0, 0);
 
   @override
   void initState() {
@@ -207,39 +210,40 @@ class _GpsModeScreenState extends State<GpsModeScreen> with SingleTickerProvider
                 ],
               )
             ),
-            Positioned(
-              top: top,
-              left: left,
-              child: Draggable(
-                feedback: Container(
-                  width: geofenceRadius,
-                  height: geofenceRadius,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.transparent,
-                    border: Border.all(color: primaryColor, width: 2),
+            if(creatingGeofence)
+              Positioned(
+                top: top,
+                left: left,
+                child: Draggable(
+                  feedback: Container(
+                    width: geofenceRadius,
+                    height: geofenceRadius,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.transparent,
+                      border: Border.all(color: primaryColor, width: 2),
+                    ),
                   ),
-                ),
-                childWhenDragging: Container(), // Optionally, you can provide a different widget when dragging
-                child: Container(
-                  width: geofenceRadius,
-                  height: geofenceRadius,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.deepOrange.withOpacity(0.3),
-                    border: Border.all(color: primaryColor, width: 2),
+                  childWhenDragging: Container(), // Optionally, you can provide a different widget when dragging
+                  child: Container(
+                    width: geofenceRadius,
+                    height: geofenceRadius,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.deepOrange.withOpacity(0.3),
+                      border: Border.all(color: primaryColor, width: 2),
+                    ),
                   ),
+                  onDragEnd: (details) {
+                    setState(() {
+                      // Update the position of the circle based on the drag details
+                      // Adjust the top and left values as needed
+                      top = details.offset.dy - 88;
+                      left = details.offset.dx;
+                    });
+                  },
                 ),
-                onDragEnd: (details) {
-                  setState(() {
-                    // Update the position of the circle based on the drag details
-                    // Adjust the top and left values as needed
-                    top = details.offset.dy - 88;
-                    left = details.offset.dx;
-                  });
-                },
               ),
-            ),
 
 
             Positioned(

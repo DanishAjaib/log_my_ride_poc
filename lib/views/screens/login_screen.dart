@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:log_my_ride/utils/utils.dart';
 import 'package:log_my_ride/views/screens/main_screen.dart';
 import 'package:log_my_ride/views/screens/rider_home_screen.dart';
@@ -39,7 +40,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  getLogo(80),
+                  const SizedBox(height: 15,),
+                  Text('LogMyRide', style: GoogleFonts.orbitron(fontSize: 25),),
+                  const SizedBox(height: 15,),
                   getTitle('Login'),
                   getSubtitle('Please login to continue'),
                   const SizedBox(height: 20),

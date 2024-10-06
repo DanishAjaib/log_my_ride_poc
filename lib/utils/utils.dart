@@ -264,18 +264,22 @@ getSkewedChipText(double skew, String text, {double? textSize = 10, Color? bgCol
 }
 
 getChipText(String text, {double? textSize = 10, Color? bgColor = Colors.red, Icon? icon, TextStyle? textStyle}) {
-  return Container(
-    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-    decoration: BoxDecoration(
-      color: bgColor,
-      borderRadius: BorderRadius.circular(10),
-    ),
-    child:  Row(
-      children: [
-        Text(text, style: textStyle ?? TextStyle(color: Colors.white, fontSize: textSize ?? 10, fontWeight: FontWeight.bold),),
-        if (icon != null) Icon(icon.icon, color: Colors.white, size: 10),
-      ],
-    ),
+  return Wrap(
+   children: [
+     Container(
+       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+       decoration: BoxDecoration(
+         color: bgColor,
+         borderRadius: BorderRadius.circular(10),
+       ),
+       child:  Row(
+         children: [
+           Text(text, style: textStyle ?? TextStyle(color: Colors.white, fontSize: textSize ?? 10, fontWeight: FontWeight.bold),),
+           if (icon != null) Icon(icon.icon, color: Colors.white, size: 10),
+         ],
+       ),
+     ),
+   ],
   );
 }
 iconText(IconData icon, String text, Function onPressed) {

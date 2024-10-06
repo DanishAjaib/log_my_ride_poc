@@ -63,42 +63,7 @@ class _MainScreenState extends State<MainScreen> {
 
 
           ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.notifications),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: const Icon(Icons.settings),
-              onPressed: () {
 
-              },
-            ),
-          ],
-          /*bottom: _selectedIndex == 0 ? PreferredSize(
-            preferredSize: const Size.fromHeight(80),
-            child: Obx(() {
-              return userController.currentUser.isEmpty ? const CircularProgressIndicator() : Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        getSubtitle('Welcome back,'),
-                        Text(userController.currentUser.first.name ?? 'John Doe', style: const TextStyle(color: primaryColor),),
-                      ],
-                    ),
-                    CircleAvatar(
-                      radius: 30,
-                      backgroundImage: NetworkImage(faker.image.image()),
-                    ),
-                  ],
-                ),
-              );
-            }),
-          ) : null,*/
         ),
         drawer: Drawer(
           shape: const RoundedRectangleBorder(
@@ -134,52 +99,34 @@ class _MainScreenState extends State<MainScreen> {
               ),
               ListTile(
                 selected: true,
-                selectedTileColor: primaryColor.withOpacity(0.2),
+                selectedTileColor: primaryColor,
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(topRight: Radius.circular(20), bottomRight: Radius.circular(20)),
                 ),
                 iconColor: Colors.white,
-                trailing: const Icon(LineIcons.home),
+                trailing: const Icon(LineIcons.home, color: Colors.white,),
                 title: const Text('Home', style: TextStyle(color: Colors.white),),
                 onTap: () {
                   Navigator.pop(context);
                 },
               ),
+
               ListTile(
+                selectedTileColor: primaryColor,
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(topRight: Radius.circular(20), bottomRight: Radius.circular(20)),
                 ),
                 iconColor: Colors.white,
-                trailing: const Icon(LineIcons.user),
-                title: const Text('My Profile', style: TextStyle(color: Colors.white),),
+                trailing: const Icon(LineIcons.user, color: Colors.white,),
+                title: const Text('My Profile',),
                 onTap: () {
                   Navigator.pop(context);
-                  Get.to(() => const MyProfileScreen());
+                  Get.to(() => MyProfileScreen());
                 },
               ),
-              /*ListTile(
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(topRight: Radius.circular(20), bottomRight: Radius.circular(20)),
-                ),
-                trailing: Icon(LineIcons.biking),
-                title: const Text('My Sessions', style: TextStyle(color: Colors.white),),
-                onTap: () {
-                  Navigator.pop(context);
-                  Get.to(() => const MySessionsScreen());
-                },
-              ),*/
+
               ListTile(
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(topRight: Radius.circular(20), bottomRight: Radius.circular(20)),
-                ),
-                trailing: const Icon(LineIcons.medal, color: Colors.white,),
-                title: const Text('ChallengeMyRide', style: TextStyle(color: Colors.white),),
-                onTap: () {
-                  Navigator.pop(context);
-                  Get.to(() => const MyChallengesScreen());
-                },
-              ),
-              ListTile(
+                selectedTileColor: primaryColor,
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(topRight: Radius.circular(20), bottomRight: Radius.circular(20)),
                 ),
@@ -191,6 +138,7 @@ class _MainScreenState extends State<MainScreen> {
                 },
               ),
               ListTile(
+                selectedTileColor: primaryColor,
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(topRight: Radius.circular(20), bottomRight: Radius.circular(20)),
                 ),
@@ -204,6 +152,7 @@ class _MainScreenState extends State<MainScreen> {
 
 
               ListTile(
+                selectedTileColor: primaryColor,
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(topRight: Radius.circular(20), bottomRight: Radius.circular(20)),
                 ),
@@ -211,6 +160,7 @@ class _MainScreenState extends State<MainScreen> {
                 title: const Text('Logout', style: TextStyle(color: Colors.white),),
                 onTap: () {
                   Navigator.pop(context);
+                  Get.offAll( () => LoginScreen());
                 },
               ),
 
@@ -243,33 +193,35 @@ class _MainScreenState extends State<MainScreen> {
                 );
               },
               destinations: [
-                NavigationDestination(
-                  icon: SvgPicture.asset('assets/icons/home_icon.svg',
-                    width: 25, color: Colors.white,),
+                const NavigationDestination(
+                  icon: Icon(Icons.home_filled,),
                   label: 'Home',
                 ),
                 NavigationDestination(
-                  icon: SvgPicture.asset('assets/icons/map_icon.svg',
-                    width: 25,
-                    color: Colors.white,),
-                  label: 'GPS',
+                  icon: Icon(LineIcons.mapPin),
+                  label: 'TrackMyRide',
                 ),
-                const Spacer(),
+                NavigationDestination(
+                  icon: Icon(Icons.people_alt_outlined),
+                  label: 'Social',
+                ),
                 //const SizedBox(width: 100),
                 //add button
-                const NavigationDestination(
+                NavigationDestination(
                   icon: Icon(LineIcons.biking, color: Colors.white,),
                   label: 'LogMyRide',
                 ),
 
                 NavigationDestination(
-                  icon: SvgPicture.asset('assets/icons/settings_icon.svg', width: 25, color: _selectedIndex == 4 ? Colors.black : Colors.white,),
+                  icon: SvgPicture.asset('assets/icons/settings_icon.svg', width: 25, color: Colors.white),
                   label: 'Tuning Mode',
                 ),
               ],
             ),
           ),
-          Positioned(
+         /* Positioned(
+
+
             bottom: 15,
             left: MediaQuery.of(context).size.width / 2 - 30,
 
@@ -310,7 +262,7 @@ class _MainScreenState extends State<MainScreen> {
               },
               child: const Icon(Icons.add),
             ),
-          ),
+          ),*/
 
         ],
       ),
@@ -333,7 +285,7 @@ class _MainScreenState extends State<MainScreen> {
         return [
           const RiderHomeScreen(),
           const GpsModeScreen(),
-          Container(),
+          const MyChallengesScreen(),
           const TrackMyBikeScreen(),
           TuningModeScreen(),
         ];
@@ -341,7 +293,7 @@ class _MainScreenState extends State<MainScreen> {
         return [
           const PromoterHomeScreen(),
           const GpsModeScreen(),
-          Container(),
+          const MyChallengesScreen(),
           const TrackMyBikeScreen(),
           TuningModeScreen(),
         ];
@@ -349,7 +301,7 @@ class _MainScreenState extends State<MainScreen> {
         return [
           const CoachHomeScreen(),
           const GpsModeScreen(),
-          Container(),
+          const MyChallengesScreen(),
           const TrackMyBikeScreen(),
           TuningModeScreen(),
         ];
@@ -357,7 +309,7 @@ class _MainScreenState extends State<MainScreen> {
         return [
           const ClubHomeScreen(),
           const GpsModeScreen(),
-          Container(),
+          const MyChallengesScreen(),
           const TrackMyBikeScreen(),
           TuningModeScreen(),
         ];
@@ -365,7 +317,7 @@ class _MainScreenState extends State<MainScreen> {
         return [
           const RiderHomeScreen(),
           const GpsModeScreen(),
-          Container(),
+          const MyChallengesScreen(),
           const TrackMyBikeScreen(),
           TuningModeScreen(),
         ];

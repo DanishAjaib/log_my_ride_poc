@@ -10,7 +10,9 @@ import 'package:line_icons/line_icons.dart';
 import 'package:log_my_ride/utils/constants.dart';
 import 'package:log_my_ride/views/widgets/app_container.dart';
 import 'package:log_my_ride/views/widgets/ride_tile.dart';
+/*
 import 'package:sensors_plus/sensors_plus.dart';
+*/
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../../controllers/user_controller.dart';
@@ -37,7 +39,9 @@ class _TrackMyBikeScreenState extends State<TrackMyBikeScreen> with SingleTicker
 
   final _streamSubscriptions = <StreamSubscription<dynamic>>[];
 
+/*
   Duration sensorInterval = SensorInterval.normalInterval;
+*/
   DateTime? _lastUpdateTime;
 
   var userController  = Get.find<UserController>();
@@ -241,8 +245,23 @@ class _TrackMyBikeScreenState extends State<TrackMyBikeScreen> with SingleTicker
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SegmentedButton(
+
+                    style:  ButtonStyle(
+                      iconColor: WidgetStateProperty.all(primaryColor),
+                      side:  WidgetStateProperty.all(BorderSide(color: primaryColor, width: 1.5)),
+                      shape: WidgetStateProperty.all(
+
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
+                          side: BorderSide(color: Colors.grey, width: 1.5),
+                        ),
+                      )
+
+
+                    ),
                     segments: const [
                       ButtonSegment(
+
                         value: 'Track',
                         label: Text('Track'),
                         icon: Icon(Icons.track_changes),
@@ -265,12 +284,12 @@ class _TrackMyBikeScreenState extends State<TrackMyBikeScreen> with SingleTicker
               ),
               AppContainer(
                 padding: 10,
-                child: Container(
-                  margin: const EdgeInsets.all(10),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 20,),
+                      const SizedBox(height: 10,),
                       Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -286,19 +305,38 @@ class _TrackMyBikeScreenState extends State<TrackMyBikeScreen> with SingleTicker
                                     ),
                                   ),
                                   onPressed: () async {
+
                                     final DateTimeRange? picked = await showDateRangePicker(
+
+
                                       context: context,
                                       firstDate: DateTime.now().subtract(const Duration(days: 300)),
                                       lastDate: DateTime.now().add(const Duration(days: 30)),
-                                      builder: (context, child) => child!,
+                                      builder: (BuildContext context, Widget? child) {
+                                        return Theme(
+                                          data: ThemeData.dark().copyWith(
+                                            primaryColor: primaryColor, // Header background color
+                                            colorScheme: ColorScheme.dark(
+                                              primary: primaryColor, // Header text and buttons
+                                              onSurface: Colors.white, // Selected dates text
+                                              //selected dates background
+                                              onPrimary: Colors.white,
+
+                                            ),
+
+                                          ),
+                                          child: child!,
+                                        );
+                                      },
                                     );
+
 
                                     if (picked != null) {
                                       setState(() {
                                         selectedDateRange = '${DateFormat('MM/dd/yyyy').format(picked.start)} - ${DateFormat('MM/dd/yyyy').format(picked.end)}';
                                       });
                                     }
-                                  }, label: Text(selectedDateRange), icon: const Icon(Icons.date_range)),
+                                  }, label: Text(selectedDateRange, style: TextStyle(color: Colors.white),), icon: Icon(Icons.date_range, color: Colors.white,)),
                             )
 
                           ]
@@ -327,31 +365,29 @@ class _TrackMyBikeScreenState extends State<TrackMyBikeScreen> with SingleTicker
 
                     ],
                   ),
-                ) ,
+                ),
               ),
               const SizedBox(height: 10,),
               //padded title
               Padding(padding: const EdgeInsets.symmetric(horizontal: 10), child: Text('${_selected.contains('Road') ? 'Road ' : 'Track '} Rides',)),
+              const SizedBox(height: 10,),
               //rides
-              AppContainer(
-                padding: 10,
-                child: Column(
-                  children: _selected.contains('Track') ? trackRides.map((e) => Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: RideTile(
-                      trackName: e['track_name']!,
-                      dateRecorded: e['date_recorded']!,
-                      rideName: e['ride_name']!,
-                      bestTime: e['best_time']!,
-                    ),
-                  ),
-                  ).toList() : roadRides.map((e) => RideTile(
-                    rideName: e['ride_name']!,
+              Column(
+                children: _selected.contains('Track') ? trackRides.map((e) => Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: RideTile(
+                    trackName: e['track_name']!,
                     dateRecorded: e['date_recorded']!,
-                    recordingLength: e['distance_travelled']!,
-                    distanceTravelled: e['recording_length']!,
-                  )).toList(),
+                    rideName: e['ride_name']!,
+                    bestTime: e['best_time']!,
+                  ),
                 ),
+                ).toList() : roadRides.map((e) => RideTile(
+                  rideName: e['ride_name']!,
+                  dateRecorded: e['date_recorded']!,
+                  recordingLength: e['distance_travelled']!,
+                  distanceTravelled: e['recording_length']!,
+                )).toList(),
               ),
               //RandomLineChart(data: _speedData),
              // SessionTile(session: userController.sessions.first, onTap: () {})

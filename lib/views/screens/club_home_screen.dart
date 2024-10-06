@@ -54,7 +54,7 @@ class _RiderHomeScreenState extends State<ClubHomeScreen> {
             children: [
               InkWell(
                 onTap: () {
-                  Get.to(() => const MyProfileScreen());
+                  Get.to(() => MyProfileScreen());
 
                 },
                 child: Container(

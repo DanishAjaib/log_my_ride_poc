@@ -3,8 +3,10 @@ import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:log_my_ride/utils/utils.dart';
+import 'package:log_my_ride/views/screens/find_a_challenge_screen.dart';
 import 'package:log_my_ride/views/widgets/app_container.dart';
 import 'package:log_my_ride/views/widgets/random_spline_chart.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -20,7 +22,7 @@ class MyChallengesScreen extends StatefulWidget {
   State<MyChallengesScreen> createState() => _MyChallengesScreenState();
 }
 
-class _MyChallengesScreenState extends State<MyChallengesScreen> {
+class _MyChallengesScreenState extends State<MyChallengesScreen> with SingleTickerProviderStateMixin {
   var selectedTrack;
 
   var latestChallenge = {
@@ -28,6 +30,23 @@ class _MyChallengesScreenState extends State<MyChallengesScreen> {
     'Track': 'Track 6',
     'Date': '2022-01-01',
     'Challenge Type': 'Time Trial',
+    'Venue': 'Venue 1',
+  };
+
+  var averageSpeedChallenge = {
+    'Rider': 'John Doe',
+    'Track': 'Track 6',
+    'Date': '2022-01-01',
+    'Challenge Type': 'Average Speed',
+    'Venue': 'Venue 1',
+  };
+
+  var maxLeanAngleChallenge = {
+    'Rider': 'John Doe',
+    'Track': 'Track 6',
+    'Date': '2022-01-01',
+    'Challenge Type': 'Max Lean Angle',
+    'Venue': 'Venue 1',
   };
 
   var allChallenges = [
@@ -38,6 +57,7 @@ class _MyChallengesScreenState extends State<MyChallengesScreen> {
       'Track': 'Track 4',
       'Date': '2022-01-01',
       'Challenge Type': 'Time Trial',
+      'Venue': 'Venue 1',
     },
     {
       'Rider': faker.person.name(),
@@ -46,6 +66,7 @@ class _MyChallengesScreenState extends State<MyChallengesScreen> {
       'Track': 'Track 5',
       'Date': '2022-01-01',
       'Challenge Type': 'Time Trial',
+      'Venue': 'Venue 1',
     },
     {
       'Rider': faker.person.name(),
@@ -54,6 +75,7 @@ class _MyChallengesScreenState extends State<MyChallengesScreen> {
       'Track': 'Track 1',
       'Date': '2022-01-01',
       'Challenge Type': 'Time Trial',
+      'Venue': 'Venue 1',
     },
     {
       'Rider': faker.person.name(),
@@ -62,6 +84,7 @@ class _MyChallengesScreenState extends State<MyChallengesScreen> {
       'Track': 'Track 2',
       'Date': '2022-01-01',
       'Challenge Type': 'Time Trial',
+      'Venue': 'Venue 2',
     },
     {
       'Rider': faker.person.name(),
@@ -70,6 +93,7 @@ class _MyChallengesScreenState extends State<MyChallengesScreen> {
       'Track': 'Track 3',
       'Date': '2022-01-01',
       'Challenge Type': 'Time Trial',
+      'Venue': 'Venue 3',
     },
     {
       'Rider': faker.person.name(),
@@ -78,10 +102,18 @@ class _MyChallengesScreenState extends State<MyChallengesScreen> {
       'Track': 'Track 3',
       'Date': '2022-01-01',
       'Challenge Type': 'Time Trial',
+      'Venue': 'Venue 1',
     }
   ];
 
+  late TabController latestChallengesTabController;
 
+
+  @override
+  void initState() {
+    latestChallengesTabController = TabController(length: 3, vsync: this);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,6 +123,21 @@ class _MyChallengesScreenState extends State<MyChallengesScreen> {
 
 
     return Scaffold(
+      floatingActionButton: Align(
+        alignment: Alignment.bottomCenter,
+        child: FloatingActionButton.extended(
+          backgroundColor: primaryColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+          onPressed: () {
+            // start new challenge
+            Get.to(() => const FindAChallengeScreen());
+          },
+          label: const Text('Find A Challenge', style: TextStyle(color: Colors.white),),
+          icon: const Icon(LineIcons.search),
+        ),
+      ),
 
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -99,28 +146,96 @@ class _MyChallengesScreenState extends State<MyChallengesScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const SizedBox(height: 20,),
               const Padding(padding: EdgeInsets.symmetric(horizontal: 10), child: Text('Latest Completed Challenge', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),)),
-              AppContainer(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: latestChallenge.entries.map((entry) => Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Column(
+              TabBar(
+                isScrollable: true,
+                indicatorColor: primaryColor,
+                labelColor: primaryColor,
+                controller: latestChallengesTabController,
+                tabs: const [
+                  Tab(text: 'Time Trial',),
+                  Tab(text: 'Average Speed',),
+                  Tab(text: 'Max Lean Angle',),
+                ],
+                onTap: (index) {
+                  //change challenge type
+                },
+              ),
+              const SizedBox(height: 10,),
+              SizedBox(
+                height: 430,
+                child: TabBarView(
+
+                  controller: latestChallengesTabController,
+                  children: [
+                    AppContainer(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: latestChallenge.entries.map((entry) => Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(entry.key,),
-                            Text(entry.value,),
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(entry.key,),
+                                  Text(entry.value,),
+                                ],
+                              ),
+                            ),
+                            const Divider(),
                           ],
-                        ),
+                        ),).toList(),
                       ),
-                      const Divider(),
-                    ],
-                  ),).toList(),
+                    ),
+                    AppContainer(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: averageSpeedChallenge.entries.map((entry) => Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(entry.key,),
+                                  Text(entry.value,),
+                                ],
+                              ),
+                            ),
+                            const Divider(),
+                          ],
+                        ),).toList(),
+                      ),
+                    ),
+                    AppContainer(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: maxLeanAngleChallenge.entries.map((entry) => Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(entry.key,),
+                                  Text(entry.value,),
+                                ],
+                              ),
+                            ),
+                            const Divider(),
+                          ],
+                        ),).toList(),
+                      ),
+                    ),
+                  ],
                 ),
               ),
+
               const SizedBox(height: 10,),
 
               Padding(
@@ -179,8 +294,54 @@ class _MyChallengesScreenState extends State<MyChallengesScreen> {
                   });
                 },
               ),
+              const SizedBox(height: 20,),
 
-              AppContainer(
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: allChallenges.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: ElevatedButton(onPressed: () {},
+                      style: ButtonStyle(
+                        shape: WidgetStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: primaryColor,
+                          child: SvgPicture.memory(getRandomSvgCode()),
+                        ),
+                        title: Row(
+                          children: [
+                            Text(getTruncatedText(allChallenges[index]['Rider'].toString(), 15), style: const TextStyle(fontSize: 16),)
+                          ],
+                        ),
+                        subtitle: Column(
+                          children: [
+                            const SizedBox(height: 5,),
+                            Row(
+                              children: [
+                                const Icon(LineIcons.clock, size: 16, color: primaryColor,),
+                                const SizedBox(width: 3),
+                                Text(DateFormat('MMM dd').format(faker.date.dateTime(minYear: 2022, maxYear: 2022)), style: const TextStyle(fontSize: 12),),
+                                const SizedBox(width: 8),
+                                Text(allChallenges[index]['Track'].toString(), style: const TextStyle(fontSize: 12),),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              )
+
+             /* AppContainer(
                 child: Column(
                   children:   allChallenges.where((challenge) => selectedTrack != null ? challenge['Track'] == selectedTrack : true)
                       .map((challenge) => ListTile(
@@ -300,7 +461,7 @@ class _MyChallengesScreenState extends State<MyChallengesScreen> {
                       ],
                     ),
                   ),).toList(),),
-                ),
+                ),*/
 
             ],
           ),

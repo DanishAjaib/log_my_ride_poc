@@ -28,7 +28,7 @@ dependencies:
   faker: ^2.1.0
   flutter_svg: ^2.0.10+1
   google_maps_flutter: ^2.6.1
-  sensors_plus: ^6.0.1
+
   faker_dart: ^0.2.2
   random_avatar: ^0.0.8
   multiavatar: ^0.1.5
@@ -52,6 +52,7 @@ dependencies:
   easy_stepper: ^0.8.5+1
   smooth_page_indicator: ^1.2.0+3
   timeline_tile: ^2.0.0
+  file_picker: ^8.1.2
 
 dev_dependencies:
   flutter_test:

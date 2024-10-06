@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:log_my_ride/utils/animated_indexed_stack.dart';
-import 'package:log_my_ride/utils/custom_thumb_shape.dart';
 import 'package:log_my_ride/utils/utils.dart';
 import 'package:log_my_ride/views/screens/main_screen.dart';
 import 'package:log_my_ride/views/widgets/app_container.dart';
@@ -31,11 +30,11 @@ class _NewRideEventScreenState extends State<NewRideEventScreen> {
   var allTripTypes = {'Return', 'One-Way'};
   var allTypes = {'Road', 'Track'};
   var currentIndex = 0;
-  var _selectedSurfaceType = {'Dirt'};
+  final _selectedSurfaceType = {'Dirt'};
   var allSurfaceTypes = {'Dirt', 'Tar'};
   var selectedRideTime = 60;
   var allRiderAllowedTypes = {'Everyone', 'Friends Only', 'Manually Approved'};
-  var _selectedRiderAllowedType = {'Everyone'};
+  final _selectedRiderAllowedType = {'Everyone'};
 
   bool placesofInterest = true;
   bool registeredUsers = true;
@@ -55,8 +54,6 @@ class _NewRideEventScreenState extends State<NewRideEventScreen> {
   bool isRidePublic = false;
 
   String openTo = 'Everyone';
-
-
 
   TimeOfDay? selectedTime;
 
@@ -736,7 +733,6 @@ class _NewRideEventScreenState extends State<NewRideEventScreen> {
                                           ),
 
                                           const SizedBox(height: 10,),
-
                                         ],
                                       ),
                                       actions: [

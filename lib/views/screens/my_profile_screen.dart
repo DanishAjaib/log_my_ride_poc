@@ -13,6 +13,8 @@ import 'package:log_my_ride/views/screens/my_challenges_screen.dart';
 import 'package:log_my_ride/views/widgets/app_container.dart';
 import 'package:log_my_ride/views/widgets/app_social.dart';
 import 'package:log_my_ride/views/widgets/friend_tile.dart';
+import 'package:log_my_ride/views/widgets/my_custom_tune_tile.dart';
+import 'package:log_my_ride/views/widgets/new_custom_tune_dialog.dart';
 import 'package:log_my_ride/views/widgets/new_sensor_dialog.dart';
 import 'package:log_my_ride/views/widgets/new_vehicle_dialog.dart';
 import 'package:log_my_ride/views/widgets/sensor_tile.dart';
@@ -27,8 +29,16 @@ import '../widgets/event_tile.dart';
 import '../widgets/rating_bar.dart';
 import 'event_summary_screen.dart';
 
+
+enum TuningStatus {
+  Delivered,
+  PendingSubmission,
+  InProgress,
+}
 class MyProfileScreen extends StatefulWidget {
-  const MyProfileScreen({super.key});
+
+  int defaultIndex;
+  MyProfileScreen({super.key, this.defaultIndex = 0});
 
   @override
   State<MyProfileScreen> createState() => _MyProfileScreenState();
@@ -173,10 +183,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> with SingleTickerProv
       'email': faker.internet.email(),
       'added': faker.date.dateTime(minYear: 2024, maxYear: 2025).millisecondsSinceEpoch,
     },
-
   ];
-
-
 
   //clubs data
   final List<Map<String, dynamic>> _clubData = [
@@ -213,6 +220,33 @@ class _MyProfileScreenState extends State<MyProfileScreen> with SingleTickerProv
       'name': 'New Event Created',
       'description': faker.address.city(),
       'time': faker.date.dateTime(minYear: 2024, maxYear: 2025),
+    },
+  ];
+  //my custom tune data
+  final List<Map<String, dynamic>> _customTuneData = [
+    {
+      'name': 'Custom Tune 1',
+      'description': faker.lorem.sentence(),
+      'time': faker.date.dateTime(minYear: 2024, maxYear: 2025),
+      'status': 'Delivered',
+    },
+    {
+      'name': 'Custom Tune 2',
+      'description': faker.lorem.sentence(),
+      'time': faker.date.dateTime(minYear: 2024, maxYear: 2025),
+      'status': 'Delivered',
+    },
+    {
+      'name': 'Custom Tune 3',
+      'description': faker.lorem.sentence(),
+      'time': faker.date.dateTime(minYear: 2024, maxYear: 2025),
+      'status': 'Pending Submission',
+    },
+    {
+      'name': 'Custom Tune 4',
+      'description': faker.lorem.sentence(),
+      'time': faker.date.dateTime(minYear: 2024, maxYear: 2025),
+      'status': 'In Progress',
     },
   ];
 
@@ -278,6 +312,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> with SingleTickerProv
   @override
   void initState() {
     tabController = TabController(length: 10, vsync: this);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      tabController.animateTo(widget.defaultIndex);
+    });
     super.initState();
   }
   @override
@@ -285,38 +322,12 @@ class _MyProfileScreenState extends State<MyProfileScreen> with SingleTickerProv
 
     _friendData.sort((b, a) => a['rideTime'].compareTo(b['rideTime']));
     var svgCode = Uint8List.fromList(multiavatar('X-SLAYER').codeUnits);
+    //post frame callback
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Profile'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.arrow_drop_down),
-            onPressed: () {
-              //show dropdown
-              showMenu(context: context, position:  const RelativeRect.fromLTRB(double.infinity, 0, 0, 0), items: [
-                const PopupMenuItem(
-                  child: Row(
-                    children: [
-                      Icon(Icons.settings),
-                      SizedBox(width: 10),
-                      Text('Settings'),
-                    ],
-                  ),
-                ),
-                const PopupMenuItem(
-                  child: Row(
-                    children: [
-                      Icon(Icons.exit_to_app),
-                      SizedBox(width: 10),
-                      Text('Sign Out'),
-                    ],
-                  ),
-                ),
 
-              ]);
-            },
-          )
-        ],
       ),
       body: Column(
         children: [
@@ -336,7 +347,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> with SingleTickerProv
               Tab(text: 'My Clubs'),
               Tab(text: 'My Challenges'),
               Tab(text: 'My Notifications'),
-              Tab(text: 'Tuning Overview'),
+              Tab(text: 'My Custom Tune'),
             ],
           ),
           Expanded(
@@ -344,6 +355,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> with SingleTickerProv
 
               controller: tabController,
               children: [
+                //personal info
                 SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
                   child: Padding(
@@ -1115,21 +1127,32 @@ class _MyProfileScreenState extends State<MyProfileScreen> with SingleTickerProv
                     ),
                   ),
                 ),
-                //notificationss
+                //MyCustomTune overview
                 SingleChildScrollView(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
                         children: [
                           const SizedBox(height: 20,),
+
+                          //myCustomeTune Data List
                           ListView.builder(itemBuilder:  (context, index) {
-                            return ListTile(
-                              title: Text(_notificationData[index]['name']),
-                              subtitle: Text(_notificationData[index]['description']),
-                              trailing: Text(DateFormat('dd-MM-yyyy').format(_notificationData[index]['time'])),
-                            );
+                            return MyCustomTuneTile(myCustomTune:  _customTuneData[index],
+                                onPressed: () {
+                              showDialog(context: context, builder: (context) {
+                                return NewCustomTuneDialog(
+                                  onTuneCreated: () {
+                                    setState(() {
+                                      _customTuneData[index]['status'] = 'In Progress';
+                                    });
+                                  },
+                                );
+                              });
+
+
+                            });
                           },
-                            itemCount: _notificationData.length,
+                            itemCount: _customTuneData.length,
                             shrinkWrap: true,
                           ),
 

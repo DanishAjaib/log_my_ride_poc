@@ -252,8 +252,10 @@ class _EventsScreenState extends State<EventsScreen> {
                        ),
                       ),
                       child: SegmentedButton(
+
                         showSelectedIcon: false,
                         style: ButtonStyle(
+                          side:  WidgetStateProperty.all(BorderSide(color: primaryColor)),
                           shape: WidgetStateProperty.all(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(50),
