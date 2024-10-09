@@ -625,10 +625,7 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
                                         //purchase
                                         Navigator.pop(context);
                                         Get.snackbar('Success', 'Event Booked Successfully', backgroundColor: Colors.green, colorText: Colors.white);
-                                        Get.offAll(() => const MainScreen());
-                                        Future.delayed(Duration.zero, () {
-                                          Get.to(() => const EventsScreen());
-                                        });
+                                        Get.off(() => const EventsScreen());
 
                                       },
                                       style: ElevatedButton.styleFrom(

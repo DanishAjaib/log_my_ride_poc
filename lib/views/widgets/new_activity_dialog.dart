@@ -103,18 +103,73 @@ class _NewGroupDialogState extends State<NewActivityDialog> {
       content: SizedBox(
         height: 450,
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(
+            decelerationRate: ScrollDecelerationRate.fast
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text('Create a new activity', style: TextStyle(fontSize: 16)),
           
               const SizedBox(height: 25,),
+              DropdownButtonFormField(
+                  items: const [
+                    DropdownMenuItem(
+                      value: 'L Plater Road Test',
+                      child: Text('L Plater Road Test'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Private',
+                      child: Text('L Plater Road Test 2' ),
+                    ),
+                  ],
+                  onChanged: (value) {
+
+                  }
+              ),
+
+              const SizedBox(height: 10,),
               TextField(
-                controller: _nameController,
-                keyboardType: TextInputType.text,
+                controller: TextEditingController(),
+               /* onTap: () async {
+                  showTimePicker(context: context, initialTime: TimeOfDay.now()).then((value) {
+                    if(value != null) {
+                      setState(() {
+                        activityStartTime = formatTimeOfDay(value);
+                        _startTimeController.text = activityStartTime;
+                      });
+                    }
+                  });
+
+                },*/
+                keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                    labelText: 'Activity Name',
-                    hintText: 'Enter activity name',
+                    labelText: 'Stop Distance',
+                    hintText: 'Stop Distance',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)
+                    )
+                ),
+              ),
+              const SizedBox(height: 10,),
+
+              TextField(
+                controller: TextEditingController(),
+                /*onTap: () async {
+                  showTimePicker(context: context, initialTime: TimeOfDay.now()).then((value) {
+                    if(value != null) {
+                      setState(() {
+                        activityStartTime = formatTimeOfDay(value);
+                        _startTimeController.text = activityStartTime;
+                      });
+                    }
+                  });
+
+                },*/
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                    labelText: 'Min/Max Speed',
+                    hintText: 'Min/Max Speed',
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10)
                     )
@@ -197,6 +252,17 @@ class _NewGroupDialogState extends State<NewActivityDialog> {
                     )
                 ),
               ),
+/*              const SizedBox(height: 15,),
+              const Text('Set Activity Baseline'),*/
+              const SizedBox(height: 15,),
+              SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                      onPressed: () {
+
+                      }, child: const Text(
+
+                      'Set Activity Baseline'))),
 
 
           

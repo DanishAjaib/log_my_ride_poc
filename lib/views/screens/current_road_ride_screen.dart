@@ -227,11 +227,7 @@ class _CurrentRoadRideScreenState extends State<CurrentRoadRideScreen> {
                       _rideTimer?.cancel();
                       Navigator.pop(context);
                       /*Get.to(() => const SessionSummaryScreen());*/
-                      Get.offAll(() => SplashScreen());
-                      Future.delayed(Duration.zero, () {
-                        // Once HomeScreen is loaded, navigate to the second screen
-                        Get.to(() => const SessionSummaryScreen());
-                      });
+                      Get.off(() => const SessionSummaryScreen());
 
 
                     }, child: const Text('Yes')),

@@ -73,11 +73,7 @@ class _CurrentSessionScreenState extends State<CurrentSessionScreen> {
                         onTap: () {
                           loggingController.stopSensorStreams();
                           loggingController.sensorTimer?.cancel();
-                          Get.offAll(() => const SplashScreen());
-                          Future.delayed(Duration.zero, () {
-                            // Once HomeScreen is loaded, navigate to the second screen
-                            Get.to(() => const TrackRideSummaryScreen());
-                          });
+                          Get.off(() => const TrackRideSummaryScreen());
 /*
                          Get.offAll(() => const TrackRideSummaryScreen());
 */

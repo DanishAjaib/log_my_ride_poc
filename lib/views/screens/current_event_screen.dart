@@ -320,11 +320,7 @@ class _CurrentEventScreenState extends State<CurrentEventScreen> {
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      Get.offAll(() => const SplashScreen());
-                      Future.delayed(Duration.zero, () {
-                        // Once HomeScreen is loaded, navigate to the second screen
-                        Get.to(() => CompleteEventScreen(currentEvent: widget.currentEvent ,));
-                      });
+                      Get.off(() => CompleteEventScreen(currentEvent: widget.currentEvent ,));
 
                     },
                     child: const Text('End Event', style: TextStyle(color: Colors.red),),
