@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:log_my_ride/controllers/events_controller.dart';
 import 'package:log_my_ride/models/session.dart';
 import 'package:log_my_ride/utils/constants.dart';
 import 'package:log_my_ride/utils/utils.dart';
@@ -108,8 +109,6 @@ class _CompleteEventScreenState extends State<CompleteEventScreen> with SingleTi
     HistoricalAnalysisDatum('Venue 10', avgCost: 5500, avgRevenue: 6500, avgRiderCount: 5500, LMRMarketingNotifications: 6000),
     HistoricalAnalysisDatum('Venue 11', avgCost: 6000, avgRevenue: 7000, avgRiderCount: 6000, LMRMarketingNotifications: 6500),
     HistoricalAnalysisDatum('Venue 12', avgCost: 6500, avgRevenue: 7500, avgRiderCount: 6500, LMRMarketingNotifications: 7000),
-
-
 
   ];
 
@@ -331,10 +330,11 @@ class _CompleteEventScreenState extends State<CompleteEventScreen> with SingleTi
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Complete Event'),
+        title: const Text('Event Summary'),
 
         actions: [
           //publish
+          if(widget.currentEvent['isPublished'] == false)
           ElevatedButton.icon(
 
             onPressed: () {
@@ -351,6 +351,7 @@ class _CompleteEventScreenState extends State<CompleteEventScreen> with SingleTi
                     ),
                     TextButton(
                       onPressed: () {
+                        EventController().publishEvent(widget.currentEvent);
                         Get.offAll(MainScreen());
                       },
                       child: const Text('Yes'),

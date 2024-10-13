@@ -121,7 +121,7 @@ class _FindAChallengeScreenState extends State<FindAChallengeScreen>  with Singl
             TabBar(
               dividerColor: primaryColor,
               dividerHeight: 2,
-              splashBorderRadius: BorderRadius.circular(10),
+              splashBorderRadius: BorderRadius.only( topLeft: Radius.circular(10), topRight: Radius.circular(10)),
               indicatorWeight: 10,
               indicatorSize: TabBarIndicatorSize.label,
               isScrollable: true,

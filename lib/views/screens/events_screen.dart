@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:log_my_ride/controllers/user_controller.dart';
 import 'package:log_my_ride/utils/utils.dart';
+import 'package:log_my_ride/views/screens/complete_event_screen.dart';
 import 'package:log_my_ride/views/screens/event_summary_screen.dart';
 import 'package:log_my_ride/views/screens/login_screen.dart';
 import 'package:log_my_ride/views/screens/new_road_coach_event_screen.dart';
@@ -26,15 +27,21 @@ class EventsScreen extends StatefulWidget {
   State<EventsScreen> createState() => _EventsScreenState();
 }
 
-class _EventsScreenState extends State<EventsScreen> {
+class _EventsScreenState extends State<EventsScreen>  with TickerProviderStateMixin {
   var selectedMode = 0;
   var eventsController = Get.put(EventController());
+  late TabController  controller;
 
   String currentFilter = 'All';
 
   Set<String> selectedEventType = {'Training'};
   var allEventTypes = ['Track', 'Road', 'Coaching', 'Training'];
 
+  @override
+  void initState() {
+    controller  = TabController(length: 2, vsync: this);
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -146,168 +153,224 @@ class _EventsScreenState extends State<EventsScreen> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: selectedMode == 0 ? SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+        padding: const EdgeInsets.all(8),
+        child: selectedMode == 0 ? Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TabBar(
+              dividerColor: primaryColor,
+              dividerHeight: 2,
+              splashBorderRadius: BorderRadius.only( topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+              indicatorWeight: 10,
+              indicatorSize: TabBarIndicatorSize.label,
+              isScrollable: true,
+              indicatorColor: primaryColor,
+              labelColor: primaryColor,
+              controller: controller,
+              tabs: [
+              Tab(text: 'Upcoming',),
+              Tab(text: 'Published',),
+            ],),
+            const SizedBox(height: 10,),
 
-              Row(
-                children: [
-                  const Text('Upcoming Events', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),),
-                  const Spacer(),
+            Expanded(
+              child: TabBarView(
+                controller: controller,
+               children: [
+                 SingleChildScrollView(
+                   physics: const BouncingScrollPhysics(),
+                   child: Column(
+                     children: [
+                       Row(
+                         children: [
+                           const Text('Upcoming Events', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),),
+                           const Spacer(),
 
-                  GestureDetector(
-                    onTapDown: (details) {
-                      //show context menu at this location
-                      showMenu(
-                        context: context,
-                        position: RelativeRect.fromLTRB(details.globalPosition.dx, details.globalPosition.dy, 0, 0),
-                        items: [
-                          PopupMenuItem(
-                            child: TextButton.icon(
-                                icon: const Icon(LineIcons.calendarAlt, color: primaryColor, size: 18,),
-                                label: const Text('All', style: TextStyle(color: Colors.white),),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  setState(() {
-                                    currentFilter = 'All';
-                                  });
-                                }),
-                          ),
-                          PopupMenuItem(
-                            child: TextButton.icon(
-                                icon: const Icon(LineIcons.calendarAlt, color: primaryColor, size: 18,),
-                                label: const Text('Next 7 Days', style: TextStyle(color: Colors.white),),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  setState(() {
-                                    currentFilter = 'Next 7 Days';
-                                  });
-                                }),
-                          ),
-                          PopupMenuItem(
-                            child: TextButton.icon(
-                                icon: const Icon(LineIcons.calendarAlt, color: primaryColor, size: 18,),
-                                label: const Text('Next 30 Days', style: TextStyle(color: Colors.white),),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  setState(() {
-                                    currentFilter = 'Next 30 Days';
-                                  });
-                                }),
-                          ),
-                          //custom
-                          PopupMenuItem(
-                            child: TextButton.icon(
-                                icon: const Icon(LineIcons.calendarAlt, color: primaryColor, size: 18,),
-                                label: const Text('Custom', style: TextStyle(color: Colors.white),),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  showDateRangePicker(
-                                      context: context,
-                                      firstDate:  DateTime.now(),
-                                      lastDate: DateTime.now().add(const Duration(days: 365))).then((value) {
+                           GestureDetector(
+                             onTapDown: (details) {
+                               //show context menu at this location
+                               showMenu(
+                                 context: context,
+                                 position: RelativeRect.fromLTRB(details.globalPosition.dx, details.globalPosition.dy, 0, 0),
+                                 items: [
+                                   PopupMenuItem(
+                                     child: TextButton.icon(
+                                         icon: const Icon(LineIcons.calendarAlt, color: primaryColor, size: 18,),
+                                         label: const Text('All', style: TextStyle(color: Colors.white),),
+                                         onPressed: () {
+                                           Navigator.pop(context);
+                                           setState(() {
+                                             currentFilter = 'All';
+                                           });
+                                         }),
+                                   ),
+                                   PopupMenuItem(
+                                     child: TextButton.icon(
+                                         icon: const Icon(LineIcons.calendarAlt, color: primaryColor, size: 18,),
+                                         label: const Text('Next 7 Days', style: TextStyle(color: Colors.white),),
+                                         onPressed: () {
+                                           Navigator.pop(context);
+                                           setState(() {
+                                             currentFilter = 'Next 7 Days';
+                                           });
+                                         }),
+                                   ),
+                                   PopupMenuItem(
+                                     child: TextButton.icon(
+                                         icon: const Icon(LineIcons.calendarAlt, color: primaryColor, size: 18,),
+                                         label: const Text('Next 30 Days', style: TextStyle(color: Colors.white),),
+                                         onPressed: () {
+                                           Navigator.pop(context);
+                                           setState(() {
+                                             currentFilter = 'Next 30 Days';
+                                           });
+                                         }),
+                                   ),
+                                   //custom
+                                   PopupMenuItem(
+                                     child: TextButton.icon(
+                                         icon: const Icon(LineIcons.calendarAlt, color: primaryColor, size: 18,),
+                                         label: const Text('Custom', style: TextStyle(color: Colors.white),),
+                                         onPressed: () {
+                                           Navigator.pop(context);
+                                           showDateRangePicker(
+                                               context: context,
+                                               firstDate:  DateTime.now(),
+                                               lastDate: DateTime.now().add(const Duration(days: 365))).then((value) {
 
-                                      setState(() {
-                                        var start = DateFormat('yyyy-MM-dd').format(value!.start);
-                                        var end = DateFormat('yyyy-MM-dd').format(value.end);
-                                        currentFilter = '$start - $end';
-                                      });
-                                  });
+                                             setState(() {
+                                               var start = DateFormat('yyyy-MM-dd').format(value!.start);
+                                               var end = DateFormat('yyyy-MM-dd').format(value.end);
+                                               currentFilter = '$start - $end';
+                                             });
+                                           });
 
-                                }),
-                          ),
+                                         }),
+                                   ),
 
-                        ],
-                      );
-                    },
-                    child: TextButton.icon(
-                        icon: const Icon(LineIcons.calendarAlt, color: primaryColor, size: 18,),
-                        label: Text(currentFilter, style: const TextStyle(color: Colors.white),),
-                        onPressed: () {
-                          //show context menu at this location
+                                 ],
+                               );
+                             },
+                             child: TextButton.icon(
+                                 icon: const Icon(LineIcons.calendarAlt, color: primaryColor, size: 18,),
+                                 label: Text(currentFilter, style: const TextStyle(color: Colors.white),),
+                                 onPressed: () {
+                                   //show context menu at this location
 
 
-                        }),
-                  )
-                ],
-              ),
-              const SizedBox(height: 10,),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const SizedBox(width: 20,),
-                    SegmentedButtonTheme(
-                      data: SegmentedButtonThemeData(
-                       style: ButtonStyle(
-                         shape: WidgetStateProperty.all(
-                           RoundedRectangleBorder(
-                             borderRadius: BorderRadius.circular(50),
-                             side: BorderSide(color: primaryColor, width: 1),
-                           ),
+                                 }),
+                           )
+                         ],
+                       ),
+                       const SizedBox(height: 10,),
+                       SingleChildScrollView(
+                         scrollDirection: Axis.horizontal,
+                         physics: const BouncingScrollPhysics(),
+                         child: Row(
+                           mainAxisAlignment: MainAxisAlignment.center,
+                           crossAxisAlignment: CrossAxisAlignment.center,
+                           children: [
+                             const SizedBox(width: 20,),
+                             SegmentedButtonTheme(
+                               data: SegmentedButtonThemeData(
+                                 style: ButtonStyle(
+                                   shape: WidgetStateProperty.all(
+                                     RoundedRectangleBorder(
+                                       borderRadius: BorderRadius.circular(50),
+                                       side: BorderSide(color: primaryColor, width: 1),
+                                     ),
+                                   ),
+                                 ),
+                               ),
+                               child: SegmentedButton(
+
+                                 showSelectedIcon: false,
+                                 style: ButtonStyle(
+                                   side:  WidgetStateProperty.all(BorderSide(color: primaryColor)),
+                                   shape: WidgetStateProperty.all(
+                                     RoundedRectangleBorder(
+                                       borderRadius: BorderRadius.circular(50),
+                                       side: BorderSide(color: primaryColor, width: 1),
+                                     ),
+                                   ),
+                                 ),
+                                 segments: allEventTypes.map((e) {
+                                   return ButtonSegment(value: e, label: Text(e), );
+                                 }).toList(),
+                                 multiSelectionEnabled: false,
+                                 emptySelectionAllowed: false, selected: selectedEventType,
+                                 onSelectionChanged: (value) {
+                                   setState(() {
+                                     selectedEventType = value;
+                                   });
+                                 },
+                               ),
+                             ),
+                           ],
                          ),
                        ),
-                      ),
-                      child: SegmentedButton(
+                       const SizedBox(height: 10,),
 
-                        showSelectedIcon: false,
-                        style: ButtonStyle(
-                          side:  WidgetStateProperty.all(BorderSide(color: primaryColor)),
-                          shape: WidgetStateProperty.all(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50),
-                              side: BorderSide(color: primaryColor, width: 1),
-                            ),
-                          ),
-                        ),
-                        segments: allEventTypes.map((e) {
-                          return ButtonSegment(value: e, label: Text(e), );
-                        }).toList(),
-                        multiSelectionEnabled: false,
-                        emptySelectionAllowed: false, selected: selectedEventType,
-                        onSelectionChanged: (value) {
-                          setState(() {
-                            selectedEventType = value;
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                ),
+                       Obx(() {
+                         var userTypeEvents = getUserTypeEvents(eventsController.events);
+
+                         return getEventsLength(eventsController.events) > 0 ?ListView.builder(
+
+                           shrinkWrap: true,
+                           itemCount: userTypeEvents.length,
+                           itemBuilder: (context, index) {
+                             return Padding(
+                               padding: const EdgeInsets.only(bottom: 5),
+                               child: EventTile(
+                                 event: userTypeEvents[index],
+                                 onPressed: () {
+                                   Get.to(() => EventSummaryScreen(event: userTypeEvents[index],));
+                                 },
+                               ),
+                             );
+                           },
+                         ) : Container(
+                             height: Get.height * 0.5,
+                             child: const Center(child: Text('No events found'),));
+                       }),
+
+                     ],
+                   ),
+                 ),
+                 Column(
+                   children: [
+                     Obx(() {
+                       var userTypeEvents = getUserTypeEvents(eventsController.events);
+                       var publishedEvents = eventsController.events.where((element) => element['published'] == true).toList();
+
+
+                       return getEventsLength(publishedEvents) > 0 ?ListView.builder(
+
+                         shrinkWrap: true,
+                         itemCount: publishedEvents.length,
+                         itemBuilder: (context, index) {
+                           return Padding(
+                             padding: const EdgeInsets.only(bottom: 5),
+                             child: EventTile(
+                               event: publishedEvents[index],
+                               onPressed: () {
+                                 Get.to(() => CompleteEventScreen(currentEvent: publishedEvents[index],));
+                               },
+                             ),
+                           );
+                         },
+                       ) : Container(
+                           height: Get.height * 0.5,
+                           child: const Center(child: Text('No events found'),));
+                     }),
+                   ],
+                 )
+               ],
               ),
-              const SizedBox(height: 10,),
+            )
 
-              Obx(() {
-                var userTypeEvents = getUserTypeEvents(eventsController.events);
 
-                return getEventsLength(eventsController.events) > 0 ?ListView.builder(
-
-                  shrinkWrap: true,
-                  itemCount: userTypeEvents.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 5),
-                      child: EventTile(
-                        event: userTypeEvents[index],
-                        onPressed: () {
-                          Get.to(() => EventSummaryScreen(event: userTypeEvents[index],));
-                        },
-                      ),
-                    );
-                  },
-                ) : Container(
-                    height: Get.height * 0.5,
-                    child: const Center(child: Text('No events found'),));
-              }),
-
-            ],
-          ),
+          ],
         ) : Center(
           child: SfCalendar(
             todayHighlightColor: primaryColor,

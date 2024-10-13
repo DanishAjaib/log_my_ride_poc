@@ -24,8 +24,13 @@ class EventController extends GetxController {
     super.onClose();
   }
 
-  void addEvent(Map<String, dynamic> event) {
-    FirebaseFirestore.instance.collection('rides').add(event);
+
+
+  void publishEvent(Map<String, dynamic> event) {
+    print('Publishing : ${event['eventId']}');
+    FirebaseFirestore.instance.collection('rides').doc(event['eventId']).update({
+      'published': true,
+    });
   }
 
   void listenToEvents() {

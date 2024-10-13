@@ -203,9 +203,12 @@ class _NewTrackRidePromoterEventScreen extends State<NewTrackRidePromoterEventSc
                             TextButton(
                               onPressed: () {
                                 Navigator.pop(context);
-                                FirebaseFirestore.instance.collection('rides').add({
+                                var eventId    = FirebaseFirestore.instance.collection('rides').doc().id;
+                                FirebaseFirestore.instance.collection('rides').doc(eventId).set({
                                   'type': _selectedType.first,
                                   'eventType': 'Promoter-Track',
+                                  'eventId': eventId,
+                                  'published': false,
                                   'tripType': _selectedTripType.first,
                                   'minRiderSkill': requiredSkill,
                                   'surfaceType': _selectedSurfaceType.first,

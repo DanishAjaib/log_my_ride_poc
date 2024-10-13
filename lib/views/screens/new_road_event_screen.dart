@@ -161,9 +161,12 @@ class _NewRideEventScreenState extends State<NewRideEventScreen> {
                             TextButton(
                               onPressed: () {
                                 Navigator.pop(context);
-                                FirebaseFirestore.instance.collection('rides').add({
+                                var eventId = FirebaseFirestore.instance.collection('rides').doc().id;
+                                FirebaseFirestore.instance.collection('rides').doc(eventId).set({
                                   'type': _selectedType.first,
                                   'tripType': _selectedTripType.first,
+                                  'eventId': eventId,
+                                  'published': false,
                                   'eventType': 'Rider - Road',
                                   'surfaceType': _selectedSurfaceType.first,
                                   'rideTime': selectedRideTime,
