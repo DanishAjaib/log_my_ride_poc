@@ -1,14 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:log_my_ride/controllers/user_controller.dart';
 import 'package:log_my_ride/utils/constants.dart';
+import 'package:log_my_ride/utils/utils.dart';
 import 'package:log_my_ride/views/screens/current_event_screen.dart';
 import 'package:log_my_ride/views/screens/events_screen.dart';
+import 'package:log_my_ride/views/screens/login_screen.dart';
 import 'package:log_my_ride/views/widgets/app_container.dart';
 import 'package:log_my_ride/views/widgets/dummy_map_container.dart';
+import 'package:log_my_ride/views/widgets/home_button.dart';
 
+import 'complete_event_screen.dart';
 import 'main_screen.dart';
 
 class EventSummaryScreen extends StatefulWidget {
@@ -422,6 +429,106 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
                       ),
                     ),
                   ),
+                  if(Get.find<UserController>().selectedUserType.value == UserType.COACH)
+                    ... [
+                      const SizedBox(height: 10,),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 10),
+                        child: Text(
+                          'Event Financials',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10,),
+                      AppContainer(
+                        child:  HomeButton(
+                            height: 100,
+                            iconText: '1',
+                            column2Children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Column(
+
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Text('Total Revenue', style: TextStyle(color: Colors.grey, fontSize: 12),),
+                                      Text('\$${faker.randomGenerator.decimal(min: 1000, scale: 2).toStringAsFixed(2)}', style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),),
+                                    ],
+                                  ),
+                                  //vertical divider
+                                  const SizedBox(width: 15,),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Text('Total Expenses', style: TextStyle(color: Colors.grey, fontSize: 12),),
+                                      Text('\$${faker.randomGenerator.decimal(min: 1000, scale: 2).toStringAsFixed(2)}', style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),),
+                                    ],
+                                  ),
+                                  const SizedBox(width: 15,),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Text('Registrations', style: TextStyle(color: Colors.grey, fontSize: 12),),
+                                      Text(faker.randomGenerator.decimal(min: 50, scale: 2).toStringAsFixed(0), style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            ],
+
+                            icon: null),
+                      )
+
+
+
+                    ],
+
+                  if(Get.find<UserController>().selectedUserType.value == UserType.COACH)
+                    ...[
+                      const SizedBox(height: 10,),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 10),
+                        child: Text(
+                          'Event Activities',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10,),
+                      AppContainer(
+                        child: Column(
+                          children: [
+                            AppContainer(child: ListTile(
+
+                              leading: CircleAvatar(
+                                child: SvgPicture.memory(getRandomSvgCode()),
+                              ),
+                              title: Text('Activity A'),
+
+                            ))
+                          ],
+                        ),
+                      ),
+                      AppContainer(
+                        child: Column(
+                          children: [
+                            AppContainer(child: ListTile(
+                              leading: CircleAvatar(
+                                child: SvgPicture.memory(getRandomSvgCode()),
+                              ),
+                              title: Text('Activity B'),
+
+                            ))
+                          ],
+                        ),
+                      )
+                    ],
+
+
                   if(widget.event['eventType'].toString().contains('Track'))
                     ...[
                       const SizedBox(height: 10),
@@ -673,4 +780,10 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
       ),
     );
   }
+}
+
+getRandomDateTime() {
+  var format = DateFormat('dd/MM/yyyy HH:mm a');
+  return format.format(faker.date.dateTime(minYear: 2023, maxYear: 2024));
+
 }

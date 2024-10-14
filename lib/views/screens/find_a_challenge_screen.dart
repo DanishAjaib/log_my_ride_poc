@@ -211,7 +211,7 @@ class _FindAChallengeScreenState extends State<FindAChallengeScreen>  with Singl
                                             Text(faker.person.name()),
                                            Row(
                                              children: [
-                                               Text(feedPosts[index]['type'].toString(), style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                                               Text(feedPosts[index]['type'].toString(), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
                                                 const SizedBox(width: 5,),
                                                Text(feedPosts[index]['date'].toString(), style: const TextStyle(color: Colors.grey),),
                                              ],
@@ -219,7 +219,6 @@ class _FindAChallengeScreenState extends State<FindAChallengeScreen>  with Singl
                                           ],
                                         ),
                                         const Spacer(),
-
                                       ],
                                     ),
                                     const SizedBox(height: 20,),
@@ -268,9 +267,7 @@ class _FindAChallengeScreenState extends State<FindAChallengeScreen>  with Singl
                                                   Container(
                                                     width: 150,
                                                     height: 150,
-
                                                     decoration: BoxDecoration(
-
                                                         color: primaryColor,
                                                         borderRadius: BorderRadius.circular(5)
                                                     ),
@@ -281,7 +278,6 @@ class _FindAChallengeScreenState extends State<FindAChallengeScreen>  with Singl
                                                   ),
                                                   const SizedBox(width: 5,),
                                                   DummyMapContainer(width: 150, height: 150)
-
                                                 ],
                                               ),
                                             )
@@ -314,7 +310,6 @@ class _FindAChallengeScreenState extends State<FindAChallengeScreen>  with Singl
                                             label: Text(feedPosts[index]['shares'].toString()),
                                             icon: const Icon(LineIcons.share, color: primaryColor,),
                                           ),
-
                                         ],
                                       ),
                                     ),
