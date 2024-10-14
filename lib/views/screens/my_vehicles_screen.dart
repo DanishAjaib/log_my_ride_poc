@@ -25,15 +25,15 @@ class _MyVehiclesScreenState extends State<MyVehiclesScreen> {
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                TextField(
-                  decoration: const InputDecoration(
+                const TextField(
+                  decoration: InputDecoration(
                     labelText: 'Vehicle Name',
                     border: OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 5),
-                TextField(
-                  decoration: const InputDecoration(
+                const TextField(
+                  decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Vehicle Image URL',
                   ),
@@ -54,7 +54,7 @@ class _MyVehiclesScreenState extends State<MyVehiclesScreen> {
       floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
       appBar: AppBar(
 
-        title: Text('My Vehicles'),
+        title: const Text('My Vehicles'),
       ),
       body: Container(
         padding: const EdgeInsets.all(10),

@@ -9,9 +9,10 @@ class HomeButton extends StatelessWidget {
   IconData? icon;
   String? image;
   double? height;
+  Function? onTap;
 
 
-  HomeButton({super.key, required this.iconText ,required this.column2Children, required this.icon, this.image, this.height});
+  HomeButton({super.key, required this.iconText ,required this.column2Children, required this.icon, this.image, this.height, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,9 @@ class HomeButton extends StatelessWidget {
             ),
           ),
         ),
-        onPressed: () {},
+        onPressed: () {
+          if(onTap != null) onTap!();
+        },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [

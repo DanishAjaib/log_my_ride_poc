@@ -9,7 +9,9 @@ import 'package:intl/intl.dart';
 import 'package:log_my_ride/controllers/user_controller.dart';
 import 'package:log_my_ride/utils/constants.dart';
 import 'package:log_my_ride/utils/utils.dart';
+import 'package:log_my_ride/views/screens/events_screen.dart';
 import 'package:log_my_ride/views/screens/my_profile_screen.dart';
+import 'package:log_my_ride/views/screens/session_summary_screen.dart';
 import 'package:log_my_ride/views/widgets/home_button.dart';
 import 'package:log_my_ride/views/widgets/square_button.dart';
 import 'package:multiavatar/multiavatar.dart';
@@ -18,8 +20,10 @@ import '../../controllers/logging_controller.dart';
 import '../../controllers/navigation_controller.dart';
 
 class RiderHomeScreen extends StatefulWidget {
+  Function? onBestLap;
 
-  const RiderHomeScreen({super.key});
+
+  RiderHomeScreen({super.key, this.onBestLap});
 
   @override
   State<RiderHomeScreen> createState() => _RiderHomeScreenState();
@@ -89,7 +93,12 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                     Text('Last Ride ${getRandomDateTime()}', style: const TextStyle(color: Colors.white, fontSize: 12),),
                   ],
                   image: 'assets/images/bike_image.jpg',
-                  icon: null),
+                  icon: null,
+                  onTap: () {
+                    Get.to(() => const SessionSummaryScreen());
+
+                  },
+              ),
               const SizedBox(height: 10,),
               HomeButton(
                   iconText: '1',
@@ -99,7 +108,11 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                     Text('Static at  ${getRandomDateTime()}', style: const TextStyle(color: Colors.white, fontSize: 12),),
                   ],
                   image: 'assets/images/bike_image_2.PNG',
-                  icon: null),
+                  icon: null,
+                  onTap: () {
+                    Get.to(() => const EventsScreen());
+                  },
+              ),
               const SizedBox(height: 10,),
               HomeButton(
                   iconText: '5',
@@ -110,6 +123,9 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                     Text('${faker.address.streetName()} - ${getRandomDateTime()}', style: const TextStyle(color: Colors.white, fontSize: 12),),
                   ],
                   icon: null,
+                onTap: () {
+                  Get.to(() => const EventsScreen());
+                },
                 image: 'assets/images/bike_image.jpg',
               ),
 
@@ -122,6 +138,10 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                     Text(faker.company.name(), style: const TextStyle(color: Colors.white, fontSize: 12,),),
                   ],
                   icon: null,
+                onTap: () {
+                     widget.onBestLap!();
+
+                },
                 image : 'assets/images/bike_image.jpg',
               ),
           /*    const SizedBox(height: 10,),

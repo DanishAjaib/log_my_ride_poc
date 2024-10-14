@@ -70,7 +70,7 @@ class _SessionSummaryScreenState extends State<SessionSummaryScreen> with Single
   void initState() {
 
 
-    _tabController = TabController(length: 5, vsync: this)..addListener(() {
+    _tabController = TabController(length: 4, vsync: this)..addListener(() {
       if (_tabController!.index == 0) {
         setState(() {
           mapHeight = 250;
@@ -277,7 +277,6 @@ class _SessionSummaryScreenState extends State<SessionSummaryScreen> with Single
                 Tab(text: 'ReplayMyRide'),
                 Tab(text: 'Social Stats'),
                 Tab(text: 'AI Coach'),
-                Tab(text: 'Data'),
             ]),
           Stack(
             children: [
@@ -292,7 +291,7 @@ class _SessionSummaryScreenState extends State<SessionSummaryScreen> with Single
                     var isPlaying = replayController.isPlaying.value;
                     return OSMFlutter(
                       onMapIsReady: (value) async {
-                        var geoPoints = await locationController.drawRoad(startPoint: GeoPoint(
+                       /* var geoPoints = await locationController.drawRoad(startPoint: GeoPoint(
                             latitude: locationController.currentPosition.value.latitude,
                             longitude: locationController.currentPosition.value.longitude), endPoint: GeoPoint(
                             latitude: locationController.currentPosition.value.latitude + 0.03,
@@ -311,7 +310,7 @@ class _SessionSummaryScreenState extends State<SessionSummaryScreen> with Single
                               ),
                             ));
 
-                        await addFellowRiderMarkers(geoPoints);
+                        await addFellowRiderMarkers(geoPoints);*/
                       },
                       controller: controller,
                       mapIsLoading: const Center(child: CircularProgressIndicator(color: primaryColor, strokeWidth: 2,)),
@@ -1584,7 +1583,7 @@ class _SessionSummaryScreenState extends State<SessionSummaryScreen> with Single
                           ),
                         ),
                       ),
-                      //data
+                      /*//data
                       SingleChildScrollView(
                         physics: const BouncingScrollPhysics(),
                         scrollDirection: Axis.horizontal,
@@ -1632,7 +1631,7 @@ class _SessionSummaryScreenState extends State<SessionSummaryScreen> with Single
                             );
                           }
                         ),
-                      )
+                      )*/
                     ]
                 )
             )

@@ -6,10 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:log_my_ride/controllers/events_controller.dart';
 import 'package:log_my_ride/controllers/user_controller.dart';
 import 'package:log_my_ride/utils/constants.dart';
 import 'package:log_my_ride/utils/utils.dart';
+import 'package:log_my_ride/views/screens/complete_event_screen.dart';
+import 'package:log_my_ride/views/screens/current_event_screen.dart';
 import 'package:log_my_ride/views/screens/my_profile_screen.dart';
+import 'package:log_my_ride/views/screens/session_summary_screen.dart';
 import 'package:log_my_ride/views/widgets/home_button.dart';
 import 'package:log_my_ride/views/widgets/square_button.dart';
 import 'package:multiavatar/multiavatar.dart';
@@ -102,6 +106,9 @@ class _RiderHomeScreenState extends State<ClubHomeScreen> {
                    )
                   ],
                   image: 'assets/images/bike_image.jpg',
+                  onTap: () {
+                    Get.to(() => CurrentEventScreen(currentEvent: Get.find<EventController>().events[0]));
+                  },
                   icon: null),
               const SizedBox(height: 10,),
               HomeButton(
@@ -143,6 +150,10 @@ class _RiderHomeScreenState extends State<ClubHomeScreen> {
                       ],
                     )
                   ],
+                  onTap: () {
+                    Get.to(() => CompleteEventScreen(currentEvent: Get.find<EventController>().events[0]));
+
+              },
                   icon: null),
               const SizedBox(height: 10,),
               HomeButton(
@@ -167,6 +178,9 @@ class _RiderHomeScreenState extends State<ClubHomeScreen> {
                 ],
                 icon: null,
                 image: 'assets/images/bike_image.jpg',
+                onTap: () {
+                  Get.to(() => const SessionSummaryScreen());
+                },
               ),
               const SizedBox(height: 10,),
               HomeButton(

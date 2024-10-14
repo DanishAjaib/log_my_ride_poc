@@ -26,6 +26,7 @@ import 'package:log_my_ride/views/screens/track_mode_screen.dart';
 import 'package:log_my_ride/views/screens/track_my_bike_screen.dart';
 import 'package:log_my_ride/views/screens/tuning_mode_screen.dart';
 
+import '../../controllers/events_controller.dart';
 import '../../utils/constants.dart';
 import '../../utils/utils.dart';
 import 'my_profile_screen.dart';
@@ -44,6 +45,7 @@ class _MainScreenState extends State<MainScreen> {
   final LoggingController loggingController = Get.put(LoggingController());
   final ReplayTimerController replayTimerController = Get.put(ReplayTimerController());
   final LocationController _mapController = Get.put(LocationController());
+  var eventsController = Get.put(EventController());
 
   @override
   Widget build(BuildContext context) {
@@ -324,7 +326,13 @@ class _MainScreenState extends State<MainScreen> {
     switch(userController.selectedUserType.value) {
       case UserType.RIDER:
         return [
-          const RiderHomeScreen(),
+          RiderHomeScreen(
+            onBestLap: () {
+              setState(() {
+                _pageController.animateToPage(2, duration:  const Duration(milliseconds: 250), curve: Curves.easeIn);
+              });
+            },
+          ),
           const GpsModeScreen(),
           const MyChallengesScreen(),
           const TrackMyBikeScreen(),
@@ -356,7 +364,7 @@ class _MainScreenState extends State<MainScreen> {
         ];
       default:
         return [
-          const RiderHomeScreen(),
+          RiderHomeScreen(),
           const GpsModeScreen(),
           const MyChallengesScreen(),
           const TrackMyBikeScreen(),

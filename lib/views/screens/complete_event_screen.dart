@@ -334,7 +334,7 @@ class _CompleteEventScreenState extends State<CompleteEventScreen> with SingleTi
 
         actions: [
           //publish
-          if(widget.currentEvent['isPublished'] == false)
+          if(widget.currentEvent['published'] == false)
           ElevatedButton.icon(
 
             onPressed: () {
@@ -352,15 +352,13 @@ class _CompleteEventScreenState extends State<CompleteEventScreen> with SingleTi
                     TextButton(
                       onPressed: () {
                         EventController().publishEvent(widget.currentEvent);
-                        Get.offAll(MainScreen());
+                        Get.offAll(const MainScreen());
                       },
                       child: const Text('Yes'),
                     ),
                   ],
                 );
               });
-
-
             },
             icon: const Icon(LineIcons.upload),
             label: const Text('Publish' , style: TextStyle(color: Colors.white),),
@@ -1276,19 +1274,19 @@ class _CompleteEventScreenState extends State<CompleteEventScreen> with SingleTi
                                         Row(
                                           children: [
                                             const Icon(Icons.star, color: primaryColor, size: 15,),
-                                            Text('Skill: ${e['Skill']}', style: TextStyle(fontSize: 12),),
+                                            Text('Skill: ${e['Skill']}', style: const TextStyle(fontSize: 12),),
                                           ],
                                         ),
                                         Row(
                                           children: [
                                             const Icon(Icons.star, color: primaryColor, size: 15,),
-                                            Text('Day Score: ${e['Day Score']}', style: TextStyle(fontSize: 12)),
+                                            Text('Day Score: ${e['Day Score']}', style: const TextStyle(fontSize: 12)),
                                           ],
                                         ),
                                         Row(
                                           children: [
                                             const Icon(Icons.star, color: primaryColor, size: 15,),
-                                            Text('Challenge Won: ${e['Challenge Won']}', style: TextStyle(fontSize: 12)),
+                                            Text('Challenge Won: ${e['Challenge Won']}', style: const TextStyle(fontSize: 12)),
                                           ],
                                         ),
                                       ],
